@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "updatedAt": "2026-06-05T10:43:50.683Z",
+  "skills": {
+    "access": {
+      "count": 1,
+      "lastUsed": "2026-03-28T12:14:59.557Z"
+    },
+    "update-config": {
+      "count": 1,
+      "lastUsed": "2026-05-19T14:16:59.255Z"
+    },
+    "vercel-cli": {
+      "count": 1,
+      "lastUsed": "2026-06-05T10:43:50.682Z"
+    }
+  },
+  "commands": {},
+  "agents": {},
+  "hooks": {}
+}

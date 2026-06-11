@@ -1,0 +1,15 @@
+{
+  "agents": [
+    {
+      "agent_id": "a716fb6477d0cb583",
+      "agent_type": "claude-code-harness:task-worker",
+      "started_at": "2026-05-12T09:15:47.850Z",
+      "parent_mode": "none",
+      "status": "running"
+    }
+  ],
+  "total_spawned": 1,
+  "total_completed": 0,
+  "total_failed": 0,
+  "last_updated": "2026-05-12T09:15:47.952Z"
+}

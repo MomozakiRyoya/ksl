@@ -1,0 +1,45 @@
+{
+  "updatedAt": "2026-05-12T09:15:47.850Z",
+  "missions": [
+    {
+      "id": "session:7d85f2c6-0c67-4945-b848-fe8fa53fdb43:none",
+      "source": "session",
+      "name": "none",
+      "objective": "Session mission",
+      "createdAt": "2026-05-12T09:15:47.850Z",
+      "updatedAt": "2026-05-12T09:15:47.850Z",
+      "status": "running",
+      "workerCount": 1,
+      "taskCounts": {
+        "total": 1,
+        "pending": 0,
+        "blocked": 0,
+        "inProgress": 1,
+        "completed": 0,
+        "failed": 0
+      },
+      "agents": [
+        {
+          "name": "claude-code-harness:task-worker:a716fb6",
+          "role": "claude-code-harness:task-worker",
+          "ownership": "a716fb6477d0cb583",
+          "status": "running",
+          "currentStep": null,
+          "latestUpdate": null,
+          "completedSummary": null,
+          "updatedAt": "2026-05-12T09:15:47.850Z"
+        }
+      ],
+      "timeline": [
+        {
+          "id": "session-start:a716fb6477d0cb583:2026-05-12T09:15:47.850Z",
+          "at": "2026-05-12T09:15:47.850Z",
+          "kind": "update",
+          "agent": "claude-code-harness:task-worker:a716fb6",
+          "detail": "started claude-code-harness:task-worker:a716fb6",
+          "sourceKey": "session-start:a716fb6477d0cb583"
+        }
+      ]
+    }
+  ]
+}

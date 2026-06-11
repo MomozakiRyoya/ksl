@@ -1,0 +1,444 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1781187633194,
+  "projectRoot": "/Users/momozaki/claude-dev/ksl",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "next",
+        "version": "16.2.1",
+        "category": "fullstack"
+      },
+      {
+        "name": "react",
+        "version": "19.2.4",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "19.2.4",
+        "category": "frontend"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "npm run build",
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": "npm run dev",
+    "scripts": {
+      "dev": "next dev",
+      "build": "next build",
+      "start": "next start"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": "type-based"
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "docs",
+      "public",
+      "scripts",
+      "src"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 1,
+      "lastAccessed": 1781187633142,
+      "keyFiles": [
+        "SECURITY_NOTES.md"
+      ]
+    },
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 8,
+      "lastAccessed": 1781187633142,
+      "keyFiles": [
+        "file.svg",
+        "fsl-logo.jpg",
+        "fsl-season6-group.jpg",
+        "fsl-season7.jpg",
+        "globe.svg"
+      ]
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 5,
+      "lastAccessed": 1781187633154,
+      "keyFiles": [
+        "apps-script.gs",
+        "populate-sheets.ts",
+        "setup-input-sheets.ts",
+        "setup-sheets.ts",
+        "test-fetchers.ts"
+      ]
+    },
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 2,
+      "lastAccessed": 1781187633155,
+      "keyFiles": [
+        "middleware-old.txt",
+        "proxy.ts"
+      ]
+    },
+    "supabase": {
+      "path": "supabase",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1781187633155,
+      "keyFiles": []
+    },
+    "tasks": {
+      "path": "tasks",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1781187633155,
+      "keyFiles": [
+        "lessons.md",
+        "todo.md"
+      ]
+    },
+    "src/app": {
+      "path": "src/app",
+      "purpose": "Application code",
+      "fileCount": 5,
+      "lastAccessed": 1781187633156,
+      "keyFiles": [
+        "favicon.ico",
+        "globals.css",
+        "layout.tsx"
+      ]
+    },
+    "src/components": {
+      "path": "src/components",
+      "purpose": "UI components",
+      "fileCount": 0,
+      "lastAccessed": 1781187633156,
+      "keyFiles": []
+    },
+    "src/lib": {
+      "path": "src/lib",
+      "purpose": "Library code",
+      "fileCount": 10,
+      "lastAccessed": 1781187633157,
+      "keyFiles": [
+        "constants.ts",
+        "content-filter.ts",
+        "data.ts"
+      ]
+    },
+    "supabase/migrations": {
+      "path": "supabase/migrations",
+      "purpose": "Database migrations",
+      "fileCount": 5,
+      "lastAccessed": 1781187633157,
+      "keyFiles": [
+        "20260329_init.sql",
+        "20260513_structures.sql",
+        "20260516_player_results.sql"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "src/components/standings/StandingsPageClient.tsx",
+      "accessCount": 12,
+      "lastAccessed": 1779281019596,
+      "type": "file"
+    },
+    {
+      "path": "src/components/my-news/MyNewsPageClient.tsx",
+      "accessCount": 11,
+      "lastAccessed": 1779276937828,
+      "type": "file"
+    },
+    {
+      "path": "src/app/globals.css",
+      "accessCount": 10,
+      "lastAccessed": 1781187984974,
+      "type": "file"
+    },
+    {
+      "path": "src/app/admin/structures/StructuresAdminClient.tsx",
+      "accessCount": 9,
+      "lastAccessed": 1779275419316,
+      "type": "file"
+    },
+    {
+      "path": "src/app/admin/featured-players/page.tsx",
+      "accessCount": 9,
+      "lastAccessed": 1780658546512,
+      "type": "file"
+    },
+    {
+      "path": "src/app/schedule/[roundId]/page.tsx",
+      "accessCount": 8,
+      "lastAccessed": 1779277046900,
+      "type": "file"
+    },
+    {
+      "path": "src/app/page.tsx",
+      "accessCount": 8,
+      "lastAccessed": 1780658169513,
+      "type": "file"
+    },
+    {
+      "path": "src/app/admin/featured-players/FeaturedPlayersAdminClient.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1780658156944,
+      "type": "file"
+    },
+    {
+      "path": "src/app/admin/layout.tsx",
+      "accessCount": 5,
+      "lastAccessed": 1779658134225,
+      "type": "file"
+    },
+    {
+      "path": "src/components/home/NewsCarousel.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1779276879142,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/admin/featured-players/[id]/route.ts",
+      "accessCount": 4,
+      "lastAccessed": 1780658148981,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/admin/structures/[id]/route.ts",
+      "accessCount": 3,
+      "lastAccessed": 1779275321668,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/admin/structures/route.ts",
+      "accessCount": 3,
+      "lastAccessed": 1779275334767,
+      "type": "file"
+    },
+    {
+      "path": "src/components/pwa/SplashScreen.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1781187939302,
+      "type": "file"
+    },
+    {
+      "path": "src/app/admin/structures/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779275304706,
+      "type": "file"
+    },
+    {
+      "path": "src/app/admin/point-templates/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779275934580,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/admin/point-templates/route.ts",
+      "accessCount": 2,
+      "lastAccessed": 1779275944442,
+      "type": "file"
+    },
+    {
+      "path": "src/components/home/HomeNewsSection.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779276889841,
+      "type": "file"
+    },
+    {
+      "path": "src/app/news/[slug]/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779277185929,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/admin/players/[id]/route.ts",
+      "accessCount": 2,
+      "lastAccessed": 1779277636650,
+      "type": "file"
+    },
+    {
+      "path": "package.json",
+      "accessCount": 2,
+      "lastAccessed": 1781186630523,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/notion/client.ts",
+      "accessCount": 2,
+      "lastAccessed": 1781186682358,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/notion/queries.ts",
+      "accessCount": 2,
+      "lastAccessed": 1781186683714,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/notion/transformers.ts",
+      "accessCount": 2,
+      "lastAccessed": 1781186684457,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/sheets/client.ts",
+      "accessCount": 2,
+      "lastAccessed": 1781186685166,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/sheets/fetchers.ts",
+      "accessCount": 2,
+      "lastAccessed": 1781186685752,
+      "type": "file"
+    },
+    {
+      "path": "capacitor.config.ts",
+      "accessCount": 2,
+      "lastAccessed": 1781186705246,
+      "type": "file"
+    },
+    {
+      "path": "scripts/setup-sheets.ts",
+      "accessCount": 2,
+      "lastAccessed": 1781187121645,
+      "type": "file"
+    },
+    {
+      "path": "scripts/populate-sheets.ts",
+      "accessCount": 2,
+      "lastAccessed": 1781187160895,
+      "type": "file"
+    },
+    {
+      "path": "scripts/setup-input-sheets.ts",
+      "accessCount": 2,
+      "lastAccessed": 1781187161483,
+      "type": "file"
+    },
+    {
+      "path": "scripts/test-fetchers.ts",
+      "accessCount": 2,
+      "lastAccessed": 1781187198402,
+      "type": "file"
+    },
+    {
+      "path": "src/app/admin/results/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1781187488176,
+      "type": "file"
+    },
+    {
+      "path": "src/app/my-news/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779274837255,
+      "type": "file"
+    },
+    {
+      "path": "src/components/news/NewsModal.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779274890454,
+      "type": "file"
+    },
+    {
+      "path": "supabase/migrations/20260520_point_templates.sql",
+      "accessCount": 1,
+      "lastAccessed": 1779275189566,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/admin/point-templates/[id]/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779275202756,
+      "type": "file"
+    },
+    {
+      "path": "src/app/admin/point-templates/PointTemplatesAdminClient.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779275273670,
+      "type": "file"
+    },
+    {
+      "path": "supabase/migrations/20260520_players_image_url.sql",
+      "accessCount": 1,
+      "lastAccessed": 1779277740994,
+      "type": "file"
+    },
+    {
+      "path": "src/app/manifest.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779658040073,
+      "type": "file"
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779658050264,
+      "type": "file"
+    },
+    {
+      "path": "src/app/admin/manifest.webmanifest/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779658114303,
+      "type": "file"
+    },
+    {
+      "path": "src/app/api/admin/featured-players/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1780657879077,
+      "type": "file"
+    },
+    {
+      "path": "src/components/home/FeaturedPlayers.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1780657978001,
+      "type": "file"
+    },
+    {
+      "path": "tsconfig.json",
+      "accessCount": 1,
+      "lastAccessed": 1781187205127,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

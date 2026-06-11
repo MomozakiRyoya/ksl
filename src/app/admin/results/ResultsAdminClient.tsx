@@ -1,0 +1,1255 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import type { Round, Team, League, Player } from "@/lib/types/app";
+
+interface PlayerResult {
+  id: string;
+  round_id: string;
+  player_id: string | null;
+  player_name: string;
+  team_id: string;
+  team_name: string;
+  rank: number | null;
+  points: number;
+}
+
+interface Match {
+  id: string;
+  roundId: string;
+  homeTeamId: string;
+  homeTeamName: string;
+  homeRoundPt: number | null;
+  status: "scheduled" | "finished";
+  roundName?: string;
+  leagueName?: string;
+  leagueId?: string;
+}
+
+interface PlayerEntry {
+  teamId: string;
+  playerId: string;
+  playerName: string;
+  rank: string;
+  points: string;
+}
+
+type ResultForm = {
+  players: PlayerEntry[];
+};
+
+const emptyEntry = (): PlayerEntry => ({
+  teamId: "",
+  playerId: "",
+  playerName: "",
+  rank: "",
+  points: "",
+});
+const emptyForm = (): ResultForm => ({
+  players: Array.from({ length: 9 }, emptyEntry),
+});
+
+function Modal({
+  title,
+  onClose,
+  children,
+}: {
+  title: string;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm sm:px-4">
+      <div
+        className="w-full sm:max-w-2xl rounded-t-2xl sm:rounded-2xl border-t sm:border border-white/10 shadow-2xl max-h-[90vh] flex flex-col"
+        style={{ background: "#be185d" }}
+      >
+        <div className="flex items-center justify-between px-5 py-4 border-b border-white/8 flex-shrink-0">
+          <h2 className="text-base font-bold text-white">{title}</h2>
+          <button
+            onClick={onClose}
+            className="text-white/40 hover:text-white text-xl"
+          >
+            ✕
+          </button>
+        </div>
+        <div className="p-5 overflow-y-auto">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function ResultFormUI({
+  form,
+  setForm,
+  round,
+  teams,
+  players,
+  onSave,
+  onCancel,
+  saving,
+}: {
+  form: ResultForm;
+  setForm: React.Dispatch<React.SetStateAction<ResultForm>>;
+  round: Round | undefined;
+  teams: Team[];
+  players: Player[];
+  onSave: () => void;
+  onCancel: () => void;
+  saving: boolean;
+}) {
+  const totalPt = form.players.reduce(
+    (sum, p) => sum + (Number(p.points) || 0),
+    0,
+  );
+
+  // 最新の state を参照する関数型 setState でスタールクロージャを防ぐ
+  const update = (i: number, patch: Partial<PlayerEntry>) => {
+    setForm((prev) => ({
+      ...prev,
+      players: prev.players.map((p, idx) =>
+        idx === i ? { ...p, ...patch } : p,
+      ),
+    }));
+  };
+
+  // teamId と points がある行を「入力済み」とみなす
+  const filledCount = form.players.filter((p) => p.teamId && p.points).length;
+  // playerName がある行のうち、DB保存対象となる選手データ件数
+  const playerSaveCount = form.players.filter(
+    (p) => p.teamId && p.points && p.playerName,
+  ).length;
+
+  return (
+    <div className="space-y-4">
+      {round && (
+        <div className="flex gap-2 flex-wrap">
+          <span className="text-xs px-2.5 py-1 rounded-full bg-amber-900/40 text-amber-400 font-semibold">
+            {round.leagueName}
+          </span>
+          <span className="text-xs px-2.5 py-1 rounded-full bg-white/5 text-white/50">
+            {round.name} · {round.date}
+          </span>
+        </div>
+      )}
+
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <label className="text-xs font-semibold text-white/50 uppercase tracking-wider">
+            選手結果（最大9名）
+          </label>
+          <span className="text-xs text-amber-400 font-bold">
+            合計: {totalPt} pt / {filledCount}件
+          </span>
+        </div>
+        <div
+          className="rounded-lg border border-white/8 overflow-hidden"
+          style={{ background: "#060b14" }}
+        >
+          {/* ヘッダー */}
+          <div className="grid grid-cols-[2rem_1fr_1fr_4rem] gap-1 px-2 py-2 border-b border-white/8">
+            <div className="text-[10px] text-white/30 uppercase tracking-wider text-center">
+              順
+            </div>
+            <div className="text-[10px] text-white/30 uppercase tracking-wider">
+              チーム
+            </div>
+            <div className="text-[10px] text-white/30 uppercase tracking-wider">
+              選手名
+            </div>
+            <div className="text-[10px] text-white/30 uppercase tracking-wider text-right">
+              pt
+            </div>
+          </div>
+          {form.players.map((p, i) => {
+            const teamPlayers = p.teamId
+              ? players.filter((pl) => pl.teamId === p.teamId)
+              : [];
+            return (
+              <div
+                key={i}
+                className="grid grid-cols-[2rem_1fr_1fr_4rem] gap-1 px-2 py-1.5 border-b border-white/5 last:border-0"
+              >
+                {/* 順位 */}
+                <div className="flex items-center">
+                  <input
+                    type="number"
+                    min="1"
+                    max="9"
+                    value={p.rank}
+                    onChange={(e) => update(i, { rank: e.target.value })}
+                    className="w-full px-1 py-1 text-xs text-center rounded border border-white/10 bg-white/5 text-white outline-none focus:border-amber-500/50"
+                    placeholder={String(i + 1)}
+                  />
+                </div>
+                {/* チーム */}
+                <div>
+                  <select
+                    value={p.teamId}
+                    onChange={(e) =>
+                      update(i, {
+                        teamId: e.target.value,
+                        playerId: "",
+                        playerName: "",
+                      })
+                    }
+                    className="w-full px-1 py-1 text-xs rounded border border-white/10 bg-[#be185d] text-white outline-none focus:border-amber-500/50"
+                  >
+                    <option value="">チーム</option>
+                    {teams.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* 選手名: 選択肢があればドロップダウン、なければテキスト入力 */}
+                <div>
+                  {teamPlayers.length > 0 ? (
+                    <select
+                      value={p.playerId}
+                      disabled={!p.teamId}
+                      onChange={(e) => {
+                        const pl = teamPlayers.find(
+                          (pl) => pl.id === e.target.value,
+                        );
+                        update(i, {
+                          playerId: e.target.value,
+                          playerName: pl?.name ?? "",
+                        });
+                      }}
+                      className="w-full px-1 py-1 text-xs rounded border border-white/10 bg-[#be185d] text-white outline-none focus:border-amber-500/50 disabled:opacity-40"
+                    >
+                      <option value="">選手を選択</option>
+                      {teamPlayers.map((pl) => (
+                        <option key={pl.id} value={pl.id}>
+                          {pl.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      value={p.playerName}
+                      disabled={!p.teamId}
+                      onChange={(e) =>
+                        update(i, { playerName: e.target.value, playerId: "" })
+                      }
+                      placeholder={p.teamId ? "選手名を入力" : "チームを選択"}
+                      className="w-full px-1 py-1 text-xs rounded border border-white/10 bg-white/5 text-white outline-none focus:border-amber-500/50 disabled:opacity-40"
+                    />
+                  )}
+                </div>
+                {/* ポイント */}
+                <div>
+                  <input
+                    type="number"
+                    min="0"
+                    value={p.points}
+                    onChange={(e) => update(i, { points: e.target.value })}
+                    className="w-full px-1 py-1 text-xs text-right rounded border border-white/10 bg-white/5 text-white outline-none focus:border-amber-500/50"
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {filledCount > 0 && (
+        <div className="text-xs text-white/50 px-1">
+          チームポイント {filledCount} 件
+          {playerSaveCount > 0 && (
+            <span className="ml-2 text-amber-400 font-semibold">
+              · 選手データ {playerSaveCount} 件を保存します
+            </span>
+          )}
+          {playerSaveCount === 0 && (
+            <span className="ml-2 text-white/30">
+              （選手を選択すると個人ポイントも保存されます）
+            </span>
+          )}
+        </div>
+      )}
+
+      <div className="flex gap-3 pt-2">
+        <button
+          onClick={onCancel}
+          className="flex-1 py-2.5 rounded-xl text-sm font-semibold border border-white/10 text-white/50 hover:text-white transition-colors"
+        >
+          キャンセル
+        </button>
+        <button
+          onClick={onSave}
+          disabled={saving || filledCount === 0}
+          className="flex-1 py-2.5 rounded-xl text-sm font-bold disabled:opacity-40"
+          style={{
+            background: "linear-gradient(135deg, #c9921e, #e3c060)",
+            color: "#be185d",
+          }}
+        >
+          {saving ? "保存中..." : "保存する"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function rawToMatch(d: Record<string, unknown>): Match {
+  return {
+    id: d.id as string,
+    roundId: (d.round_id as string) ?? "",
+    homeTeamId: (d.home_team_id as string) ?? "",
+    homeTeamName: (d.home_team_name as string) ?? "",
+    homeRoundPt: d.home_round_pt as number | null,
+    status: (d.status as "scheduled" | "finished") ?? "finished",
+  };
+}
+
+export default function ResultsAdminClient({
+  rounds,
+  teams,
+  leagues,
+  players,
+}: {
+  rounds: Round[];
+  teams: Team[];
+  leagues: League[];
+  players: Player[];
+}) {
+  const [viewMode, setViewMode] = useState<"input" | "list">("input");
+  const [selectedLeagueId, setSelectedLeagueId] = useState("");
+  const [selectedRoundId, setSelectedRoundId] = useState("");
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [allMatches, setAllMatches] = useState<Match[]>([]);
+  const [allLoading, setAllLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState<"create" | "edit" | "delete" | null>(null);
+  const [target, setTarget] = useState<Match | null>(null);
+  const [form, setForm] = useState<ResultForm>(emptyForm());
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState("");
+  const [playerResults, setPlayerResults] = useState<PlayerResult[]>([]);
+  const [playerResultsLoading, setPlayerResultsLoading] = useState(false);
+  const [prEditTarget, setPrEditTarget] = useState<PlayerResult | null>(null);
+  const [prEditForm, setPrEditForm] = useState({
+    playerName: "",
+    rank: "",
+    points: "",
+  });
+  const [prSaving, setPrSaving] = useState(false);
+
+  const loadAllMatches = () => {
+    setAllLoading(true);
+    fetch("/api/admin/matches")
+      .then((r) => r.json())
+      .then((data: Record<string, unknown>[]) => {
+        const enriched = data.map((d) => {
+          const r = rounds.find((r) => r.id === d.round_id);
+          return {
+            ...rawToMatch(d),
+            roundName: r?.name ?? "",
+            leagueName: r?.leagueName ?? "",
+            leagueId: r?.leagueId ?? "",
+          };
+        });
+        setAllMatches(
+          enriched.sort(
+            (a, b) =>
+              (a.leagueId ?? "").localeCompare(b.leagueId ?? "") ||
+              (a.roundName ?? "").localeCompare(b.roundName ?? ""),
+          ),
+        );
+      })
+      .finally(() => setAllLoading(false));
+  };
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(""), 8000);
+  };
+
+  const round = rounds.find((r) => r.id === selectedRoundId);
+  const filteredRounds = rounds
+    .filter((r) => r.leagueId === selectedLeagueId)
+    .sort((a, b) => a.roundNumber - b.roundNumber);
+  const roundTeams = teams.filter((t) => t.leagueId === round?.leagueId);
+
+  useEffect(() => {
+    if (!selectedRoundId) {
+      setMatches([]);
+      setPlayerResults([]);
+      return;
+    }
+    setLoading(true);
+    fetch(`/api/admin/matches?roundId=${selectedRoundId}`)
+      .then((r) => r.json())
+      .then((data: Record<string, unknown>[]) =>
+        setMatches(data.map(rawToMatch)),
+      )
+      .finally(() => setLoading(false));
+
+    setPlayerResultsLoading(true);
+    fetch(`/api/admin/player-results?roundId=${selectedRoundId}`)
+      .then((r) => r.json())
+      .then((data: PlayerResult[]) => setPlayerResults(data))
+      .catch(() => setPlayerResults([]))
+      .finally(() => setPlayerResultsLoading(false));
+  }, [selectedRoundId]);
+
+  // 選手ごとの結果をチーム別に集計して一括登録
+  const handleCreate = async () => {
+    const filled = form.players.filter((p) => p.teamId && p.points);
+    if (filled.length === 0) return;
+
+    setSaving(true);
+
+    try {
+      // チームごとにポイント集計
+      const byTeam: Record<string, { teamId: string; pts: number }> = {};
+      for (const p of filled) {
+        if (!byTeam[p.teamId]) {
+          byTeam[p.teamId] = { teamId: p.teamId, pts: 0 };
+        }
+        byTeam[p.teamId].pts += Number(p.points) || 0;
+      }
+
+      let matchError = "";
+      let playerError = "";
+
+      for (const { teamId, pts } of Object.values(byTeam)) {
+        const team = roundTeams.find((t) => t.id === teamId);
+        const res = await fetch("/api/admin/matches", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            roundId: selectedRoundId,
+            homeTeamId: teamId,
+            homeTeamName: team?.name ?? "",
+            awayTeamId: "",
+            awayTeamName: "",
+            homeScore: null,
+            awayScore: null,
+            homeRoundPt: pts,
+            awayRoundPt: null,
+            status: "finished",
+          }),
+        });
+        if (res.ok) {
+          const raw = await res.json();
+          setMatches((prev) => [...prev, rawToMatch(raw)]);
+        } else {
+          const errJson = await res.json().catch(() => ({}));
+          matchError = errJson.error ?? `matches HTTP ${res.status}`;
+        }
+      }
+
+      // チームポイント順で順位を自動計算（同点は同順位）
+      const sortedTeams = Object.values(byTeam).sort((a, b) => b.pts - a.pts);
+      const teamRankMap: Record<string, number> = {};
+      let currentRank = 1;
+      sortedTeams.forEach((t, i) => {
+        if (i > 0 && t.pts === sortedTeams[i - 1].pts) {
+          teamRankMap[t.teamId] = teamRankMap[sortedTeams[i - 1].teamId];
+        } else {
+          teamRankMap[t.teamId] = currentRank;
+        }
+        currentRank++;
+      });
+
+      // 選手個別ポイントを保存（playerName があれば保存）
+      const playerPayload = filled
+        .filter((p) => p.playerName)
+        .map((p) => ({
+          playerId: p.playerId || "",
+          playerName: p.playerName,
+          teamId: p.teamId,
+          teamName: roundTeams.find((t) => t.id === p.teamId)?.name ?? "",
+          rank: teamRankMap[p.teamId] ?? null,
+          points: Number(p.points) || 0,
+        }));
+
+      if (playerPayload.length > 0) {
+        const prRes = await fetch("/api/admin/player-results", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            roundId: selectedRoundId,
+            players: playerPayload,
+          }),
+        });
+        if (!prRes.ok) {
+          const errJson = await prRes.json().catch(() => ({}));
+          playerError = errJson.error ?? `player-results HTTP ${prRes.status}`;
+        }
+      }
+
+      if (!matchError && !playerError) {
+        setModal(null);
+        showToast(
+          `登録しました（チーム${Object.keys(byTeam).length}件・選手${playerPayload.length}件）`,
+        );
+        if (selectedRoundId) {
+          fetch(`/api/admin/player-results?roundId=${selectedRoundId}`)
+            .then((r) => r.json())
+            .then((data: PlayerResult[]) => setPlayerResults(data))
+            .catch(() => {});
+        }
+      } else if (matchError) {
+        showToast(`チーム保存エラー: ${matchError}`);
+      } else {
+        showToast(`選手保存エラー: ${playerError}`);
+      }
+    } catch (e) {
+      showToast(
+        `予期しないエラー: ${e instanceof Error ? e.message : String(e)}`,
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleEditSave = async () => {
+    if (!target) return;
+    const filled = form.players.filter((p) => p.teamId && p.points);
+    if (filled.length === 0) return;
+    const pts = filled.reduce((s, p) => s + (Number(p.points) || 0), 0);
+    const teamId = filled[0].teamId;
+    const team = roundTeams.find((t) => t.id === teamId);
+
+    setSaving(true);
+    try {
+      // チーム合計ポイントを更新
+      const res = await fetch(`/api/admin/matches/${target.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          homeTeamId: teamId,
+          homeTeamName: team?.name ?? "",
+          homeRoundPt: pts,
+        }),
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        showToast(`更新に失敗しました: ${errJson.error ?? res.status}`);
+        return;
+      }
+
+      const raw = await res.json();
+      setMatches(
+        matches.map((m) => (m.id === target.id ? rawToMatch(raw) : m)),
+      );
+
+      // このチームの順位を他チームのポイントと比較して自動計算
+      const otherMatches = matches.filter((m) => m.id !== target.id);
+      const rank =
+        otherMatches.filter((m) => (m.homeRoundPt ?? 0) > pts).length + 1;
+
+      // 選手個別ポイントを保存
+      const playerPayload = filled
+        .filter((p) => p.playerName)
+        .map((p) => ({
+          playerId: p.playerId || "",
+          playerName: p.playerName,
+          teamId: p.teamId,
+          teamName: roundTeams.find((t) => t.id === p.teamId)?.name ?? "",
+          rank,
+          points: Number(p.points) || 0,
+        }));
+
+      if (playerPayload.length > 0) {
+        const prRes = await fetch("/api/admin/player-results", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            roundId: target.roundId,
+            players: playerPayload,
+          }),
+        });
+        if (!prRes.ok) {
+          const errJson = await prRes.json().catch(() => ({}));
+          showToast(`選手保存エラー: ${errJson.error ?? prRes.status}`);
+          return;
+        }
+        // 選手結果一覧を更新
+        fetch(`/api/admin/player-results?roundId=${target.roundId}`)
+          .then((r) => r.json())
+          .then((data: PlayerResult[]) => setPlayerResults(data))
+          .catch(() => {});
+      }
+
+      setModal(null);
+      showToast(`更新しました（選手${playerPayload.length}件）`);
+    } catch (e) {
+      showToast(
+        `予期しないエラー: ${e instanceof Error ? e.message : String(e)}`,
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!target) return;
+    setSaving(true);
+    const res = await fetch(`/api/admin/matches/${target.id}`, {
+      method: "DELETE",
+    });
+    setSaving(false);
+    if (res.ok) {
+      setMatches(matches.filter((m) => m.id !== target.id));
+      setAllMatches(allMatches.filter((m) => m.id !== target.id));
+      setModal(null);
+      showToast("削除しました");
+    } else showToast("削除に失敗しました");
+  };
+
+  const handlePlayerResultDelete = async (pr: PlayerResult) => {
+    if (!confirm(`「${pr.player_name}」の結果を削除しますか？`)) return;
+    const res = await fetch(`/api/admin/player-results/${pr.id}`, {
+      method: "DELETE",
+    });
+    if (res.ok) {
+      setPlayerResults((prev) => prev.filter((r) => r.id !== pr.id));
+      showToast("削除しました");
+    } else {
+      showToast("削除に失敗しました");
+    }
+  };
+
+  const handlePlayerResultEdit = async () => {
+    if (!prEditTarget) return;
+    setPrSaving(true);
+    const res = await fetch(`/api/admin/player-results/${prEditTarget.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        playerName: prEditForm.playerName,
+        rank: Number(prEditForm.rank) || null,
+        points: Number(prEditForm.points) || 0,
+      }),
+    });
+    setPrSaving(false);
+    if (res.ok) {
+      const updated = await res.json();
+      setPlayerResults((prev) =>
+        prev.map((r) =>
+          r.id === prEditTarget.id
+            ? {
+                ...r,
+                player_name: updated.player_name,
+                rank: updated.rank,
+                points: updated.points,
+              }
+            : r,
+        ),
+      );
+      setPrEditTarget(null);
+      showToast("更新しました");
+    } else {
+      const err = await res.json().catch(() => ({}));
+      showToast(`更新エラー: ${err.error ?? res.status}`);
+    }
+  };
+
+  const openEdit = (m: Match) => {
+    setTarget(m);
+    const f = emptyForm();
+
+    // このチームの登録済み選手データを読み込んでフォームに入力
+    const teamPlayerResults = playerResults.filter(
+      (pr) => pr.team_id === m.homeTeamId,
+    );
+
+    if (teamPlayerResults.length > 0) {
+      // 既存の選手データをフォームに展開
+      const sorted = [...teamPlayerResults].sort(
+        (a, b) => (a.rank ?? 99) - (b.rank ?? 99),
+      );
+      sorted.forEach((pr, i) => {
+        if (i < 9) {
+          f.players[i] = {
+            teamId: pr.team_id,
+            playerId: pr.player_id ?? "",
+            playerName: pr.player_name,
+            rank: pr.rank != null ? String(pr.rank) : "",
+            points: String(pr.points),
+          };
+        }
+      });
+    } else {
+      // 選手データがない場合はチーム合計ポイントのみ
+      f.players[0] = {
+        teamId: m.homeTeamId,
+        playerId: "",
+        playerName: "",
+        rank: "1",
+        points: String(m.homeRoundPt ?? ""),
+      };
+    }
+
+    setForm(f);
+    setModal("edit");
+  };
+
+  return (
+    <div className="p-4 lg:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 lg:mb-8">
+        <div>
+          <p className="text-[10px] tracking-[0.3em] text-white/30 uppercase mb-1">
+            Admin
+          </p>
+          <h1 className="text-xl lg:text-2xl font-black text-white">
+            試合結果管理
+          </h1>
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          <button
+            onClick={() => {
+              setViewMode(viewMode === "list" ? "input" : "list");
+              if (viewMode !== "list") loadAllMatches();
+            }}
+            className="px-4 py-2.5 rounded-xl text-sm font-bold border border-white/10 text-white/60 hover:text-white hover:border-white/20 transition-colors whitespace-nowrap"
+          >
+            {viewMode === "list" ? "← 入力モード" : "全結果一覧"}
+          </button>
+          {viewMode === "input" && selectedRoundId && (
+            <button
+              onClick={() => {
+                setForm(emptyForm());
+                setModal("create");
+              }}
+              className="px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap"
+              style={{
+                background: "linear-gradient(135deg, #c9921e, #e3c060)",
+                color: "#be185d",
+              }}
+            >
+              + 結果を追加
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* 全結果一覧ビュー */}
+      {viewMode === "list" && (
+        <>
+          <div className="flex flex-col sm:flex-row gap-3 mb-5">
+            <div className="flex-1">
+              <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
+                リーグ / ディビジョン
+              </label>
+              <select
+                value={selectedLeagueId}
+                onChange={(e) => {
+                  setSelectedLeagueId(e.target.value);
+                  setSelectedRoundId("");
+                }}
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none"
+              >
+                <option value="">-- すべてのリーグ --</option>
+                {leagues.map((l) => (
+                  <option key={l.id} value={l.id}>
+                    {l.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex-1">
+              <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
+                節を選択
+              </label>
+              <select
+                value={selectedRoundId}
+                onChange={(e) => setSelectedRoundId(e.target.value)}
+                disabled={!selectedLeagueId}
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none disabled:opacity-40"
+              >
+                <option value="">-- すべての節 --</option>
+                {filteredRounds.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.name} ({r.date})
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div
+            className="rounded-xl border border-white/8 overflow-hidden"
+            style={{ background: "#be185d" }}
+          >
+            {allLoading && (
+              <div className="py-12 text-center text-sm text-white/30">
+                読み込み中...
+              </div>
+            )}
+            {!allLoading &&
+              (() => {
+                const filtered = allMatches.filter((m) => {
+                  if (selectedLeagueId && m.leagueId !== selectedLeagueId)
+                    return false;
+                  if (selectedRoundId && m.roundId !== selectedRoundId)
+                    return false;
+                  return true;
+                });
+                if (filtered.length === 0)
+                  return (
+                    <div className="py-12 text-center text-sm text-white/30">
+                      登録データなし
+                    </div>
+                  );
+                return (
+                  <table className="w-full min-w-[480px]">
+                    <thead>
+                      <tr className="border-b border-white/8">
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-white/40 uppercase tracking-wider">
+                          リーグ・節
+                        </th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-white/40 uppercase tracking-wider">
+                          チーム
+                        </th>
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-white/40 uppercase tracking-wider w-20">
+                          ポイント
+                        </th>
+                        <th className="w-24 px-4 py-3"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filtered.map((m) => (
+                        <tr
+                          key={m.id}
+                          className="border-b border-white/5 hover:bg-white/3 transition-colors"
+                        >
+                          <td className="px-4 py-2.5">
+                            <p className="text-xs font-semibold text-white/60">
+                              {m.leagueName}
+                            </p>
+                            <p className="text-xs text-white/30">
+                              {m.roundName}
+                            </p>
+                          </td>
+                          <td className="px-4 py-2.5 text-sm text-white font-semibold">
+                            {m.homeTeamName}
+                          </td>
+                          <td className="px-4 py-2.5">
+                            <span
+                              className="text-sm font-black tabular-nums"
+                              style={{ color: "#c9921e" }}
+                            >
+                              {m.homeRoundPt ?? 0}
+                              <span className="text-xs font-normal text-white/30 ml-0.5">
+                                pt
+                              </span>
+                            </span>
+                          </td>
+                          <td className="px-4 py-2.5">
+                            <div className="flex gap-2 justify-end">
+                              <button
+                                onClick={() => openEdit(m)}
+                                className="text-xs px-3 py-1.5 rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/20 transition-colors whitespace-nowrap"
+                              >
+                                編集
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setTarget(m);
+                                  setModal("delete");
+                                }}
+                                className="text-xs px-3 py-1.5 rounded-lg border border-red-900/50 text-red-400/70 hover:text-red-400 hover:border-red-900 transition-colors whitespace-nowrap"
+                              >
+                                削除
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                );
+              })()}
+          </div>
+        </>
+      )}
+
+      {/* 入力モード */}
+      {viewMode === "input" && (
+        <>
+          <div className="flex flex-col sm:flex-row gap-3 mb-6">
+            <div className="flex-1">
+              <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
+                リーグ / ディビジョン
+              </label>
+              <select
+                value={selectedLeagueId}
+                onChange={(e) => {
+                  setSelectedLeagueId(e.target.value);
+                  setSelectedRoundId("");
+                }}
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none"
+              >
+                <option value="">-- リーグを選択 --</option>
+                {leagues.map((l) => (
+                  <option key={l.id} value={l.id}>
+                    {l.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex-1">
+              <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
+                節を選択
+              </label>
+              <select
+                value={selectedRoundId}
+                onChange={(e) => setSelectedRoundId(e.target.value)}
+                disabled={!selectedLeagueId}
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none disabled:opacity-40"
+              >
+                <option value="">-- 節を選択 --</option>
+                {filteredRounds.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.name} ({r.date})
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {selectedRoundId && (
+            <div
+              className="rounded-xl border border-white/8 overflow-hidden"
+              style={{ background: "#be185d" }}
+            >
+              {loading && (
+                <div className="py-12 text-center text-sm text-white/30">
+                  読み込み中...
+                </div>
+              )}
+              {!loading && matches.length === 0 && (
+                <div className="py-12 text-center text-sm text-white/30">
+                  結果データなし
+                </div>
+              )}
+              {!loading && matches.length > 0 && (
+                <table className="w-full min-w-[400px]">
+                  <thead>
+                    <tr className="border-b border-white/8">
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-white/40 uppercase tracking-wider">
+                        チーム
+                      </th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-white/40 uppercase tracking-wider w-20">
+                        ポイント
+                      </th>
+                      <th className="w-24 px-4 py-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...matches]
+                      .sort(
+                        (a, b) => (b.homeRoundPt ?? 0) - (a.homeRoundPt ?? 0),
+                      )
+                      .map((m) => (
+                        <tr
+                          key={m.id}
+                          className="border-b border-white/5 hover:bg-white/3 transition-colors"
+                        >
+                          <td className="px-4 py-3 text-sm text-white font-semibold">
+                            {m.homeTeamName}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span
+                              className="text-sm font-black tabular-nums"
+                              style={{ color: "#c9921e" }}
+                            >
+                              {m.homeRoundPt ?? 0}
+                              <span className="text-xs font-normal text-white/30 ml-0.5">
+                                pt
+                              </span>
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex gap-2 justify-end">
+                              <button
+                                onClick={() => openEdit(m)}
+                                className="text-xs px-3 py-1.5 rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/20 transition-colors whitespace-nowrap"
+                              >
+                                編集
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setTarget(m);
+                                  setModal("delete");
+                                }}
+                                className="text-xs px-3 py-1.5 rounded-lg border border-red-900/50 text-red-400/70 hover:text-red-400 hover:border-red-900 transition-colors whitespace-nowrap"
+                              >
+                                削除
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          )}
+
+          {/* 選手結果一覧（保存確認用） */}
+          {selectedRoundId && (
+            <div className="mt-6">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-xs font-semibold text-white/50 uppercase tracking-wider">
+                  登録済み選手ポイント
+                </h2>
+                {playerResults.length > 0 && (
+                  <span className="text-xs text-amber-400 font-bold">
+                    {playerResults.length} 件
+                  </span>
+                )}
+              </div>
+              <div
+                className="rounded-xl border border-white/8 overflow-hidden"
+                style={{ background: "#be185d" }}
+              >
+                {playerResultsLoading && (
+                  <div className="py-8 text-center text-xs text-white/30">
+                    読み込み中...
+                  </div>
+                )}
+                {!playerResultsLoading && playerResults.length === 0 && (
+                  <div className="py-8 text-center text-xs text-white/30">
+                    選手ポイントデータなし
+                  </div>
+                )}
+                {!playerResultsLoading && playerResults.length > 0 && (
+                  <table className="w-full min-w-[360px]">
+                    <thead>
+                      <tr className="border-b border-white/8">
+                        <th className="text-left px-4 py-2 text-[10px] font-semibold text-white/40 uppercase tracking-wider w-10">
+                          順位
+                        </th>
+                        <th className="text-left px-4 py-2 text-[10px] font-semibold text-white/40 uppercase tracking-wider">
+                          選手名
+                        </th>
+                        <th className="text-left px-4 py-2 text-[10px] font-semibold text-white/40 uppercase tracking-wider">
+                          チーム
+                        </th>
+                        <th className="text-right px-4 py-2 text-[10px] font-semibold text-white/40 uppercase tracking-wider w-16">
+                          pt
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[...playerResults]
+                        .sort(
+                          (a, b) =>
+                            (a.rank ?? 99) - (b.rank ?? 99) ||
+                            b.points - a.points,
+                        )
+                        .map((pr) => (
+                          <tr
+                            key={pr.id}
+                            className="border-b border-white/5 last:border-0 hover:bg-white/3 transition-colors"
+                          >
+                            <td className="px-4 py-2 text-xs text-white/40 text-center">
+                              {pr.rank ?? "-"}
+                            </td>
+                            <td className="px-4 py-2 text-sm text-white font-semibold">
+                              {pr.player_name}
+                            </td>
+                            <td className="px-4 py-2 text-xs text-white/50">
+                              {pr.team_name}
+                            </td>
+                            <td className="px-4 py-2 text-right">
+                              <span
+                                className="text-sm font-black tabular-nums"
+                                style={{ color: "#c9921e" }}
+                              >
+                                {pr.points}
+                                <span className="text-xs font-normal text-white/30 ml-0.5">
+                                  pt
+                                </span>
+                              </span>
+                            </td>
+                            <td className="px-3 py-2">
+                              <div className="flex gap-1 justify-end">
+                                <button
+                                  onClick={() => {
+                                    setPrEditTarget(pr);
+                                    setPrEditForm({
+                                      playerName: pr.player_name,
+                                      rank:
+                                        pr.rank != null ? String(pr.rank) : "",
+                                      points: String(pr.points),
+                                    });
+                                  }}
+                                  className="text-xs px-2 py-1 rounded-lg border border-white/10 text-white/50 hover:text-white transition-colors"
+                                >
+                                  編集
+                                </button>
+                                <button
+                                  onClick={() => handlePlayerResultDelete(pr)}
+                                  className="text-xs px-2 py-1 rounded-lg border border-red-900/50 text-red-400/70 hover:text-red-400 transition-colors"
+                                >
+                                  削除
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+          )}
+
+          {!selectedRoundId && (
+            <div
+              className="rounded-xl border border-white/8 py-16 text-center"
+              style={{ background: "#be185d" }}
+            >
+              <p className="text-sm text-white/30">節を選択してください</p>
+            </div>
+          )}
+        </>
+      )}
+
+      {modal === "create" && (
+        <Modal title="試合結果を追加" onClose={() => setModal(null)}>
+          <ResultFormUI
+            form={form}
+            setForm={setForm}
+            round={round}
+            teams={roundTeams}
+            players={players}
+            onSave={handleCreate}
+            onCancel={() => setModal(null)}
+            saving={saving}
+          />
+        </Modal>
+      )}
+      {modal === "edit" && target && (
+        <Modal title="試合結果を編集" onClose={() => setModal(null)}>
+          <ResultFormUI
+            form={form}
+            setForm={setForm}
+            round={round}
+            teams={roundTeams}
+            players={players}
+            onSave={handleEditSave}
+            onCancel={() => setModal(null)}
+            saving={saving}
+          />
+        </Modal>
+      )}
+      {modal === "delete" && target && (
+        <Modal title="削除の確認" onClose={() => setModal(null)}>
+          <p className="text-sm text-white/70 mb-6">
+            「{target.homeTeamName}」の結果を削除しますか？
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setModal(null)}
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold border border-white/10 text-white/50 hover:text-white transition-colors"
+            >
+              キャンセル
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={saving}
+              className="flex-1 py-2.5 rounded-xl text-sm font-bold bg-red-600 text-white disabled:opacity-40 hover:bg-red-500 transition-colors"
+            >
+              {saving ? "削除中..." : "削除する"}
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {prEditTarget && (
+        <Modal title="選手ポイントを編集" onClose={() => setPrEditTarget(null)}>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">
+                選手名
+              </label>
+              <input
+                type="text"
+                value={prEditForm.playerName}
+                onChange={(e) =>
+                  setPrEditForm((f) => ({ ...f, playerName: e.target.value }))
+                }
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#060b14] text-white outline-none focus:border-amber-500/50"
+              />
+            </div>
+            <div className="flex gap-3">
+              <div className="flex-1">
+                <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">
+                  順位
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={prEditForm.rank}
+                  onChange={(e) =>
+                    setPrEditForm((f) => ({ ...f, rank: e.target.value }))
+                  }
+                  className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#060b14] text-white outline-none focus:border-amber-500/50"
+                  placeholder="-"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">
+                  ポイント
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={prEditForm.points}
+                  onChange={(e) =>
+                    setPrEditForm((f) => ({ ...f, points: e.target.value }))
+                  }
+                  className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#060b14] text-white outline-none focus:border-amber-500/50"
+                />
+              </div>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => setPrEditTarget(null)}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold border border-white/10 text-white/50 hover:text-white transition-colors"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handlePlayerResultEdit}
+                disabled={prSaving || !prEditForm.playerName}
+                className="flex-1 py-2.5 rounded-xl text-sm font-bold disabled:opacity-40"
+                style={{
+                  background: "linear-gradient(135deg, #c9921e, #e3c060)",
+                  color: "#be185d",
+                }}
+              >
+                {prSaving ? "保存中..." : "保存する"}
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {toast && (
+        <div
+          className="fixed bottom-6 right-6 px-5 py-3 rounded-xl text-sm font-semibold text-white shadow-lg"
+          style={{
+            background: "#be185d",
+            border: "1px solid rgba(255,255,255,0.1)",
+          }}
+        >
+          {toast}
+        </div>
+      )}
+    </div>
+  );
+}
