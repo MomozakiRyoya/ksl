@@ -231,19 +231,21 @@ export default async function HomePage() {
         {/* リーグタブ（自動スクロール） */}
         <div className="relative px-4 pb-4">
           <AutoScroll speed={22} startOffset={0}>
-            {leagues.map((league) => (
-              <Link
-                key={league.id}
-                href={`/standings?league=${league.id}`}
-                className="flex-none flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/15 backdrop-blur-sm border border-white/20 text-white hover:bg-white/25 transition-colors whitespace-nowrap"
-              >
-                <span
-                  className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ backgroundColor: league.color }}
-                />
-                {league.name}
-              </Link>
-            ))}
+            {leagues
+              .filter((league) => league.name !== "Premier League")
+              .map((league) => (
+                <Link
+                  key={league.id}
+                  href={`/standings?league=${league.id}`}
+                  className="flex-none flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/15 backdrop-blur-sm border border-white/20 text-white hover:bg-white/25 transition-colors whitespace-nowrap"
+                >
+                  <span
+                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: league.color }}
+                  />
+                  {league.name}
+                </Link>
+              ))}
           </AutoScroll>
         </div>
       </section>
