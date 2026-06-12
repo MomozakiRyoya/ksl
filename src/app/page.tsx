@@ -29,13 +29,18 @@ function getInitials(name: string): string {
 export default async function HomePage() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const supabaseAdmin =
-    supabaseUrl && supabaseServiceKey
-      ? (await import("@supabase/supabase-js")).createClient(
-          supabaseUrl,
-          supabaseServiceKey,
-        )
-      : null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let supabaseAdmin: any = null;
+  if (supabaseUrl && supabaseServiceKey) {
+    try {
+      supabaseAdmin = (await import("@supabase/supabase-js")).createClient(
+        supabaseUrl,
+        supabaseServiceKey,
+      );
+    } catch (e) {
+      console.error("[supabaseAdmin] init failed:", e);
+    }
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let featuredData: any[] | null = null;
