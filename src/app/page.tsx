@@ -37,50 +37,44 @@ export default async function HomePage() {
         )
       : null;
 
-  const noData = { data: null };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let featuredData: any[] | null = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let playerResultsData: any[] | null = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let teamsForStats: any[] | null = null;
 
-  const [
-    news,
-    leagues,
-    standings,
-    rounds,
-    teams,
-    latestVideo,
-    { data: featuredData },
-    { data: playerResultsData },
-    { data: teamsForStats },
-  ] = await Promise.all([
-    getNews(),
-    getLeagues(),
-    getStandings(),
-    getRounds(),
-    getTeams(),
-    getLatestYouTubeVideo(),
-    supabaseAdmin
-      ? supabaseAdmin
+  const [news, leagues, standings, rounds, teams, latestVideo] =
+    await Promise.all([
+      getNews(),
+      getLeagues(),
+      getStandings(),
+      getRounds(),
+      getTeams(),
+      getLatestYouTubeVideo(),
+    ]);
+
+  if (supabaseAdmin) {
+    try {
+      const [fr, pr, ts] = await Promise.all([
+        supabaseAdmin
           .from("featured_players")
           .select("id, image_url, player_name, team_name")
           .eq("is_active", true)
           .order("order_num")
-          .order("created_at")
-          .then((r) => r)
-          .catch(() => noData)
-      : Promise.resolve(noData),
-    supabaseAdmin
-      ? supabaseAdmin
+          .order("created_at"),
+        supabaseAdmin
           .from("player_results")
-          .select("player_id, player_name, team_id, team_name, rank, points")
-          .then((r) => r)
-          .catch(() => noData)
-      : Promise.resolve(noData),
-    supabaseAdmin
-      ? supabaseAdmin
-          .from("teams")
-          .select("team_id, league_id")
-          .then((r) => r)
-          .catch(() => noData)
-      : Promise.resolve(noData),
-  ]);
+          .select("player_id, player_name, team_id, team_name, rank, points"),
+        supabaseAdmin.from("teams").select("team_id, league_id"),
+      ]);
+      featuredData = fr.data;
+      playerResultsData = pr.data;
+      teamsForStats = ts.data;
+    } catch (e) {
+      console.error("[admin queries] fallback:", e);
+    }
+  }
 
   // player_results を直接集計して PlayerStats を構築
   const teamLeagueMap: Record<string, string> = {};
