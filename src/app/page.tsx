@@ -37,16 +37,7 @@ export default async function HomePage() {
         )
       : null;
 
-  const safeQuery = async <T>(
-    fn: () => Promise<{ data: T | null }>,
-  ): Promise<{ data: T | null }> => {
-    if (!supabaseAdmin) return { data: null };
-    try {
-      return await fn();
-    } catch {
-      return { data: null };
-    }
-  };
+  const noData = { data: null };
 
   const [
     news,
@@ -65,22 +56,30 @@ export default async function HomePage() {
     getRounds(),
     getTeams(),
     getLatestYouTubeVideo(),
-    safeQuery(() =>
-      supabaseAdmin!
-        .from("featured_players")
-        .select("id, image_url, player_name, team_name")
-        .eq("is_active", true)
-        .order("order_num")
-        .order("created_at"),
-    ),
-    safeQuery(() =>
-      supabaseAdmin!
-        .from("player_results")
-        .select("player_id, player_name, team_id, team_name, rank, points"),
-    ),
-    safeQuery(() =>
-      supabaseAdmin!.from("teams").select("team_id, league_id"),
-    ),
+    supabaseAdmin
+      ? supabaseAdmin
+          .from("featured_players")
+          .select("id, image_url, player_name, team_name")
+          .eq("is_active", true)
+          .order("order_num")
+          .order("created_at")
+          .then((r) => r)
+          .catch(() => noData)
+      : Promise.resolve(noData),
+    supabaseAdmin
+      ? supabaseAdmin
+          .from("player_results")
+          .select("player_id, player_name, team_id, team_name, rank, points")
+          .then((r) => r)
+          .catch(() => noData)
+      : Promise.resolve(noData),
+    supabaseAdmin
+      ? supabaseAdmin
+          .from("teams")
+          .select("team_id, league_id")
+          .then((r) => r)
+          .catch(() => noData)
+      : Promise.resolve(noData),
   ]);
 
   // player_results を直接集計して PlayerStats を構築
