@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"git init --template=\\\"\\\" && git add . && git commit -m \\\"feat: initial KSL app from FSL with pink theme\\\"\",\"description\":\"Initialize git with no templates and make initial commit\"}",
-  "error": "Exit code 128\nerror: could not write config file /Users/momozaki/claude-dev/ksl/.git/config: Operation not permitted\nfatal: could not set 'core.repositoryformatversion' to '0'",
-  "timestamp": "2026-06-11T14:28:11.713Z",
+  "tool_input_preview": "{\"command\":\"git remote set-url origin git@github.com:MomozakiRyoya/ksl.git && git push origin master\",\"description\":\"SSH URL に変更して push\"}",
+  "error": "Exit code 128\nerror: could not write config file .git/config: Operation not permitted\nfatal: could not set 'remote.origin.url' to 'git@github.com:MomozakiRyoya/ksl.git'",
+  "timestamp": "2026-06-12T09:54:36.523Z",
   "retry_count": 2
 }

@@ -179,13 +179,13 @@ export default function Sidebar() {
           className="text-xl font-black tracking-widest"
           style={{ color: "#e3c060" }}
         >
-          FSL
+          KSL
         </span>
         <span
           className="text-xs font-medium leading-tight"
           style={{ color: "rgba(255,255,255,0.38)" }}
         >
-          Fukuoka
+          Kagoshima
           <br />
           Super League
         </span>

@@ -12,7 +12,7 @@ const SHARE_TEXT = `【KSL Season 1 Premier League 現在の順位】
 🥇 BON 187pt
 🥈 TRUMP 160pt
 🥉 SuperNova 136pt
-#FSL #鹿児島スーパーリーグ #ポーカー`;
+#KSL #鹿児島スーパーリーグ #ポーカー`;
 
 const SHARE_URL = "https://kagoshimasuperleague.com";
 

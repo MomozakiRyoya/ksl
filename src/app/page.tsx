@@ -184,7 +184,7 @@ export default async function HomePage() {
         {/* コンテンツ */}
         <div className="relative px-6 pt-12 pb-6 text-center text-white">
           <h1 className="text-3xl font-black tracking-wide mb-0.5 drop-shadow-lg">
-            FUKUOKA
+            KAGOSHIMA
           </h1>
           <h1 className="text-3xl font-black tracking-wide mb-2 drop-shadow-lg">
             SUPER LEAGUE
@@ -337,7 +337,8 @@ export default async function HomePage() {
           <p className="section-title mb-3">公式動画</p>
           <a
             href={
-              latestVideo?.url ?? "https://www.youtube.com/@FukuokaSuperLeague"
+              latestVideo?.url ??
+              "https://www.youtube.com/@KagoshimaSuperLeague"
             }
             target="_blank"
             rel="noopener noreferrer"
@@ -390,7 +391,7 @@ export default async function HomePage() {
             </div>
             <div className="p-3 flex items-center justify-between gap-2">
               <span className="text-sm font-medium text-slate-900 truncate">
-                {latestVideo?.title ?? "FUKUOKA SUPER LEAGUE公式YouTube"}
+                {latestVideo?.title ?? "KAGOSHIMA SUPER LEAGUE公式YouTube"}
               </span>
               <span className="text-xs text-slate-400 flex-shrink-0">
                 YouTube

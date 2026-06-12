@@ -27,7 +27,7 @@ export default function InfoPage() {
     {
       name: "YouTube",
       handle: "KSL 公式チャンネル",
-      href: "https://www.youtube.com/@FukuokaSuperLeague",
+      href: "https://www.youtube.com/@KagoshimaSuperLeague",
       color: "#FF0000",
       icon: (
         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -55,8 +55,8 @@ export default function InfoPage() {
           </div>
           <div className="p-5">
             <p className="text-sm text-body leading-relaxed">
-              Fukuoka Super
-              League（FSL）は、鹿児島を拠点とするポーカーチームリーグです。
+              Kagoshima Super
+              League（KSL）は、鹿児島を拠点とするポーカーチームリーグです。
               複数のディビジョン・チームが年間を通じて競い合う、鹿児島最大級のポーカーリーグ戦。
             </p>
             <p className="text-sm text-body leading-relaxed mt-3">
@@ -237,7 +237,7 @@ export default function InfoPage() {
           </h2>
           <p className="text-sm font-semibold text-slate-900">株式会社 JSTT</p>
           <p className="text-xs text-body mt-1 leading-relaxed">
-            鹿児島を中心にポーカーコミュニティの発展に取り組む運営会社です。 FSL
+            鹿児島を中心にポーカーコミュニティの発展に取り組む運営会社です。 KSL
             を通じて、より多くの方にポーカーの楽しさをお届けします。
           </p>
         </div>

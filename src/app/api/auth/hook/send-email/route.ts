@@ -51,7 +51,10 @@ function buildVerifyUrl(payload: HookPayload): string {
   // デバッグログ（トークン値は出力しない）
   console.log("[hook] email_action_type:", email_action_type);
   console.log("[hook] site_url:", site_url);
-  console.log("[hook] redirect_to domain:", redirect_to ? new URL(redirect_to).hostname : "none");
+  console.log(
+    "[hook] redirect_to domain:",
+    redirect_to ? new URL(redirect_to).hostname : "none",
+  );
   console.log("[hook] token_hash length:", token_hash?.length);
 
   if (email_action_type === "recovery") {
@@ -80,7 +83,7 @@ function signupHtml(verifyUrl: string): string {
       <h1 style="margin:8px 0 0;font-size:24px;font-weight:900;color:#fff;letter-spacing:-0.02em;">メール確認</h1>
     </div>
     <div style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#be185d;">FSLへようこそ！</p>
+      <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#be185d;">KSLへようこそ！</p>
       <p style="margin:0 0 24px;font-size:14px;color:#64748b;line-height:1.7;">
         ご登録ありがとうございます。<br>
         下のボタンをクリックしてメールアドレスを確認し、アカウントを有効化してください。
@@ -140,7 +143,9 @@ export async function POST(request: Request) {
   // シークレット検証 - 失敗時は即401で拒否
   const authHeader = request.headers.get("Authorization");
   if (!verifyHookSecret(authHeader)) {
-    console.warn("[send-email hook] Secret verification failed - request rejected");
+    console.warn(
+      "[send-email hook] Secret verification failed - request rejected",
+    );
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -154,20 +159,29 @@ export async function POST(request: Request) {
   // 必須フィールドのバリデーション
   const { user, email_data } = payload;
   if (!user?.id || !user?.email || typeof user.email !== "string") {
-    return NextResponse.json({ error: "Missing required field: user.id or user.email" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing required field: user.id or user.email" },
+      { status: 400 },
+    );
   }
   if (!email_data?.email_action_type || !email_data?.token_hash) {
-    return NextResponse.json({ error: "Missing required field: email_data.email_action_type or token_hash" }, { status: 400 });
+    return NextResponse.json(
+      {
+        error:
+          "Missing required field: email_data.email_action_type or token_hash",
+      },
+      { status: 400 },
+    );
   }
 
   const verifyUrl = buildVerifyUrl(payload);
 
   const subjects: Record<string, string> = {
-    signup: "【FSL】メールアドレスの確認",
-    recovery: "【FSL】パスワード再設定",
-    invite: "【FSL】招待のご案内",
-    email_change: "【FSL】メールアドレス変更の確認",
-    magiclink: "【FSL】ログインリンク",
+    signup: "【KSL】メールアドレスの確認",
+    recovery: "【KSL】パスワード再設定",
+    invite: "【KSL】招待のご案内",
+    email_change: "【KSL】メールアドレス変更の確認",
+    magiclink: "【KSL】ログインリンク",
   };
 
   const htmlMap: Record<string, string> = {
@@ -177,7 +191,7 @@ export async function POST(request: Request) {
 
   const html = htmlMap[email_data.email_action_type] ?? signupHtml(verifyUrl);
   const subject =
-    subjects[email_data.email_action_type] ?? "【FSL】アカウント確認";
+    subjects[email_data.email_action_type] ?? "【KSL】アカウント確認";
 
   console.log("[send-email hook] FROM:", FROM);
   console.log("[send-email hook] TO:", user.email);

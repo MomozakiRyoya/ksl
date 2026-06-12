@@ -120,7 +120,7 @@ export default function SearchPageClient({ teams, players, news }: Props) {
               </svg>
             </div>
             <p className="text-base font-semibold text-slate-900 mb-1">
-              FSLを検索
+              KSLを検索
             </p>
             <p className="text-sm text-slate-500">
               チーム・選手・ニュースを検索できます

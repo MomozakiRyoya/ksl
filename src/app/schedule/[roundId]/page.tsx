@@ -479,7 +479,7 @@ export default async function RoundDetailPage({ params }: Props) {
         {/* シェアボタン */}
         <div className="animate-fade-in animate-delay-200">
           <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`FSL ${round.leagueName} ${round.name} の結果`)}&url=${encodeURIComponent(`https://kagoshimasuperleague.com/schedule/${roundId}`)}`}
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`KSL ${round.leagueName} ${round.name} の結果`)}&url=${encodeURIComponent(`https://kagoshimasuperleague.com/schedule/${roundId}`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-[#e8dfc0] text-sm font-medium transition-all active:scale-[0.99] hover:shadow-sm"

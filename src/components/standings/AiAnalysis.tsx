@@ -68,7 +68,7 @@ export default function AiAnalysis({
           AI 戦力分析
         </span>
         <span className="ml-auto text-[10px] text-white/40 font-medium">
-          powered by FSL AI
+          powered by KSL AI
         </span>
       </div>
 

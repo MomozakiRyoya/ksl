@@ -20,9 +20,12 @@ export default function TopBar() {
       <Link href="/" className="flex items-center gap-1.5">
         <span
           className="text-xs font-black px-1.5 py-0.5 rounded"
-          style={{ background: "linear-gradient(135deg,#c9921e,#e3c060)", color: "#be185d" }}
+          style={{
+            background: "linear-gradient(135deg,#c9921e,#e3c060)",
+            color: "#be185d",
+          }}
         >
-          FSL
+          KSL
         </span>
         <span className="text-[11px] font-semibold text-white/50 tracking-wide">
           Kagoshima Super League

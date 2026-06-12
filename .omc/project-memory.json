@@ -176,6 +176,12 @@
   },
   "hotPaths": [
     {
+      "path": "src/app/page.tsx",
+      "accessCount": 26,
+      "lastAccessed": 1781258447692,
+      "type": "file"
+    },
+    {
       "path": "src/components/standings/StandingsPageClient.tsx",
       "accessCount": 12,
       "lastAccessed": 1779281019596,
@@ -194,6 +200,12 @@
       "type": "file"
     },
     {
+      "path": "src/app/schedule/[roundId]/page.tsx",
+      "accessCount": 10,
+      "lastAccessed": 1781258543767,
+      "type": "file"
+    },
+    {
       "path": "src/app/admin/structures/StructuresAdminClient.tsx",
       "accessCount": 9,
       "lastAccessed": 1779275419316,
@@ -203,18 +215,6 @@
       "path": "src/app/admin/featured-players/page.tsx",
       "accessCount": 9,
       "lastAccessed": 1780658546512,
-      "type": "file"
-    },
-    {
-      "path": "src/app/schedule/[roundId]/page.tsx",
-      "accessCount": 8,
-      "lastAccessed": 1779277046900,
-      "type": "file"
-    },
-    {
-      "path": "src/app/page.tsx",
-      "accessCount": 8,
-      "lastAccessed": 1780658169513,
       "type": "file"
     },
     {
@@ -257,6 +257,12 @@
       "path": "src/app/api/admin/structures/route.ts",
       "accessCount": 3,
       "lastAccessed": 1779275334767,
+      "type": "file"
+    },
+    {
+      "path": "src/app/manifest.ts",
+      "accessCount": 3,
+      "lastAccessed": 1781258424142,
       "type": "file"
     },
     {
@@ -380,6 +386,12 @@
       "type": "file"
     },
     {
+      "path": "src/lib/supabase/server.ts",
+      "accessCount": 2,
+      "lastAccessed": 1781257580441,
+      "type": "file"
+    },
+    {
       "path": "src/app/my-news/page.tsx",
       "accessCount": 1,
       "lastAccessed": 1779274837255,
@@ -401,12 +413,6 @@
       "path": "src/app/admin/point-templates/PointTemplatesAdminClient.tsx",
       "accessCount": 1,
       "lastAccessed": 1779275273670,
-      "type": "file"
-    },
-    {
-      "path": "src/app/manifest.ts",
-      "accessCount": 1,
-      "lastAccessed": 1779658040073,
       "type": "file"
     },
     {

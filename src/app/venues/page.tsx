@@ -20,7 +20,7 @@ const VENUE_LIST: VenueInfo[] = [
     address: "鹿児島市中央区",
     capacity: "〜200名",
     mapsUrl: "https://maps.app.goo.gl/example1",
-    description: "FSLメイン会場。広々としたスペースで快適に観戦できます。",
+    description: "KSLメイン会場。広々としたスペースで快適に観戦できます。",
   },
   {
     id: "tenjin",
@@ -70,10 +70,10 @@ export default async function VenuesPage() {
         />
         <div className="relative">
           <p className="text-xs font-bold tracking-[0.2em] text-white/60 mb-1 uppercase">
-            Fukuoka Social League
+            Kagoshima Super League
           </p>
           <h1 className="text-3xl font-black tracking-tight">VENUES</h1>
-          <p className="text-sm text-white/70 mt-1.5">FSL開催会場のご案内</p>
+          <p className="text-sm text-white/70 mt-1.5">KSL開催会場のご案内</p>
         </div>
       </div>
 

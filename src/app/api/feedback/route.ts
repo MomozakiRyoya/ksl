@@ -49,11 +49,17 @@ export async function POST(request: NextRequest) {
 
   // content フィールドの型チェック
   if (typeof body !== "object" || body === null) {
-    return NextResponse.json({ error: "Request body must be an object" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Request body must be an object" },
+      { status: 400 },
+    );
   }
   const { content } = body as Record<string, unknown>;
   if (typeof content !== "string") {
-    return NextResponse.json({ error: "content must be a string" }, { status: 400 });
+    return NextResponse.json(
+      { error: "content must be a string" },
+      { status: 400 },
+    );
   }
 
   const check = filterContent(content);
@@ -66,7 +72,9 @@ export async function POST(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
-  const { error: dbError } = await supabase.from("feedback").insert({ content });
+  const { error: dbError } = await supabase
+    .from("feedback")
+    .insert({ content });
   if (dbError) {
     console.error("[feedback] DB insert error:", dbError.message);
     return NextResponse.json({ error: "保存に失敗しました" }, { status: 500 });
@@ -82,10 +90,10 @@ export async function POST(request: NextRequest) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: "FSL <onboarding@resend.dev>",
+        from: "KSL <onboarding@resend.dev>",
         to: feedbackEmail,
-        subject: "【FSL】新しい意見箱への投稿",
-        text: `新しい匿名フィードバックが届きました：\n\n${content}\n\n---\nFSL 匿名意見箱`,
+        subject: "【KSL】新しい意見箱への投稿",
+        text: `新しい匿名フィードバックが届きました：\n\n${content}\n\n---\nKSL 匿名意見箱`,
       });
     } catch (emailErr) {
       // メール失敗してもDBに保存されているので続行

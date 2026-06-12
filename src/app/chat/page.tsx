@@ -28,7 +28,7 @@ function getBotResponse(input: string): string {
   if (q.includes("ルール") || q.includes("形式"))
     return "各節でポイント制を採用しています。順位に応じてポイントが付与され、シーズン終了時の総合ポイントで最終順位が決まります。上位チームはプレーオフへ進出。";
   if (q.includes("ありがとう") || q.includes("ありがとございます"))
-    return "どういたしまして！FSLをもっと楽しんでいただけると嬉しいです⚽ 他に何か聞きたいことがあれば何でも聞いてください！";
+    return "どういたしまして！KSLをもっと楽しんでいただけると嬉しいです⚽ 他に何か聞きたいことがあれば何でも聞いてください！";
   return "すみません、その質問には答えられませんでした。「順位」「次の試合」「得点王」「チーム名」などについて聞いてみてください！";
 }
 
@@ -41,7 +41,7 @@ const SUGGESTED_QUESTIONS = [
 const INITIAL_MESSAGE: Message = {
   id: "init",
   role: "bot",
-  text: "こんにちは！FSLについて何でも聞いてください。順位・試合日程・チーム情報などお答えします⚽",
+  text: "こんにちは！KSLについて何でも聞いてください。順位・試合日程・チーム情報などお答えします⚽",
   timestamp: new Date(),
 };
 
@@ -112,7 +112,7 @@ export default function ChatPage() {
               color: "#be185d",
             }}
           >
-            FSL
+            KSL
           </div>
           <div>
             <h1 className="text-sm font-black text-white">KSL アシスタント</h1>
@@ -142,7 +142,7 @@ export default function ChatPage() {
                   color: "#e3c060",
                 }}
               >
-                FSL
+                KSL
               </div>
             )}
 
@@ -174,7 +174,7 @@ export default function ChatPage() {
               className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-black flex-shrink-0 mb-0.5 shadow-sm"
               style={{ background: "#be185d", color: "#e3c060" }}
             >
-              FSL
+              KSL
             </div>
             <div className="bg-white border border-slate-100 rounded-2xl px-4 py-3 shadow-sm">
               <div className="flex items-center gap-1">
@@ -226,7 +226,7 @@ export default function ChatPage() {
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder="FSLについて質問する..."
+            placeholder="KSLについて質問する..."
             className="flex-1 px-4 py-2.5 rounded-full border border-slate-200 text-sm bg-slate-50 text-slate-900 focus:outline-none focus:border-amber-400 focus:bg-white transition-all placeholder:text-slate-400"
             maxLength={500}
             disabled={isTyping}

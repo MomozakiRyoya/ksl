@@ -99,7 +99,7 @@ function SignupForm() {
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
             <p className="text-white/40 text-[10px] tracking-[0.3em] uppercase mb-1">
-              FSL
+              KSL
             </p>
             <h1 className="text-2xl font-black text-white tracking-tight">
               新規登録

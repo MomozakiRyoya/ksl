@@ -1,8 +1,19 @@
 {
   "version": "1.0.0",
-  "timestamp": "2026-06-11T14:21:44.324Z",
+  "timestamp": "2026-06-12T09:44:30.093Z",
   "sessionId": "",
   "wipTasks": [],
-  "recentEdits": [],
+  "recentEdits": [
+    ".claude/logs/subagent-history.jsonl",
+    ".claude/sessions/.last_inbox_check",
+    ".claude/state/precompact-snapshot.json",
+    ".omc/project-memory.json",
+    ".omc/state/agent-replay-2ef1075d-6779-4155-af5c-80711311a65a.jsonl",
+    ".omc/state/idle-notif-cooldown.json",
+    ".omc/state/last-tool-error.json",
+    ".omc/state/subagent-tracking.json",
+    "src/app/page.tsx",
+    "supabase/migrations/20260612_ksl_full_schema.sql"
+  ],
   "metrics": null
 }

@@ -54,7 +54,7 @@ export default function LivePageClient({
       const permission = await Notification.requestPermission();
       if (permission === "granted") {
         setNotifGranted(true);
-        new Notification("FSL 速報通知", {
+        new Notification("KSL 速報通知", {
           body: "試合結果の速報をお知らせします",
           icon: "/icons/icon-192.png",
         });

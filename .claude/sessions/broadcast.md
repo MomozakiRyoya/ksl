@@ -1,12 +1,3 @@
-## 2026-03-31T10:43:44Z [session-1774]
-[AUTO] 📁 `/Users/momozaki/claude-dev/fsl/src/lib/types/app.ts` が変更されました: パターン 'types/' にマッチ
-
-## 2026-03-31T10:45:40Z [session-1774]
-[AUTO] 📁 `/Users/momozaki/claude-dev/fsl/src/lib/types/app.ts` が変更されました: パターン 'types/' にマッチ
-
-## 2026-04-24T16:58:11Z [session-1777]
-[AUTO] 📁 `/Users/momozaki/claude-dev/fsl/src/app/api/auth/hook/send-email/route.ts` が変更されました: パターン 'api/' にマッチ
-
 ## 2026-04-24T16:58:29Z [session-1777]
 [AUTO] 📁 `/Users/momozaki/claude-dev/fsl/src/app/api/auth/hook/send-email/route.ts` が変更されました: パターン 'api/' にマッチ
 
@@ -297,3 +288,12 @@
 
 ## 2026-06-05T11:15:43Z [session-1780]
 [AUTO] 📁 `/Users/momozaki/claude-dev/fsl/src/app/api/admin/featured-players/[id]/route.ts` が変更されました: パターン 'api/' にマッチ
+
+## 2026-06-12T10:02:25Z [session-1781]
+[AUTO] 📁 `/Users/momozaki/claude-dev/ksl/src/app/api/auth/hook/send-email/route.ts` が変更されました: パターン 'api/' にマッチ
+
+## 2026-06-12T10:02:27Z [session-1781]
+[AUTO] 📁 `/Users/momozaki/claude-dev/ksl/src/app/api/auth/hook/send-email/route.ts` が変更されました: パターン 'api/' にマッチ
+
+## 2026-06-12T10:02:28Z [session-1781]
+[AUTO] 📁 `/Users/momozaki/claude-dev/ksl/src/app/api/feedback/route.ts` が変更されました: パターン 'api/' にマッチ

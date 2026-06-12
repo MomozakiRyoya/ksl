@@ -57,7 +57,7 @@ function PostCard({ post }: { post: Post }) {
       <Avatar seed={post.id} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 mb-1">
-          <span className="text-sm font-bold text-slate-900">FSLファン</span>
+          <span className="text-sm font-bold text-slate-900">KSLファン</span>
           <span className="text-xs text-slate-300">·</span>
           <span className="text-xs text-slate-400">
             {timeAgo(post.created_at)}
