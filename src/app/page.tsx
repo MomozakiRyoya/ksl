@@ -27,10 +27,27 @@ function getInitials(name: string): string {
 }
 
 export default async function HomePage() {
-  const supabaseAdmin = (await import("@supabase/supabase-js")).createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseAdmin =
+    supabaseUrl && supabaseServiceKey
+      ? (await import("@supabase/supabase-js")).createClient(
+          supabaseUrl,
+          supabaseServiceKey,
+        )
+      : null;
+
+  const safeQuery = async <T>(
+    fn: () => Promise<{ data: T | null }>,
+  ): Promise<{ data: T | null }> => {
+    if (!supabaseAdmin) return { data: null };
+    try {
+      return await fn();
+    } catch {
+      return { data: null };
+    }
+  };
+
   const [
     news,
     leagues,
@@ -48,16 +65,22 @@ export default async function HomePage() {
     getRounds(),
     getTeams(),
     getLatestYouTubeVideo(),
-    supabaseAdmin
-      .from("featured_players")
-      .select("id, image_url, player_name, team_name")
-      .eq("is_active", true)
-      .order("order_num")
-      .order("created_at"),
-    supabaseAdmin
-      .from("player_results")
-      .select("player_id, player_name, team_id, team_name, rank, points"),
-    supabaseAdmin.from("teams").select("team_id, league_id"),
+    safeQuery(() =>
+      supabaseAdmin!
+        .from("featured_players")
+        .select("id, image_url, player_name, team_name")
+        .eq("is_active", true)
+        .order("order_num")
+        .order("created_at"),
+    ),
+    safeQuery(() =>
+      supabaseAdmin!
+        .from("player_results")
+        .select("player_id, player_name, team_id, team_name, rank, points"),
+    ),
+    safeQuery(() =>
+      supabaseAdmin!.from("teams").select("team_id, league_id"),
+    ),
   ]);
 
   // player_results を直接集計して PlayerStats を構築
