@@ -33,69 +33,34 @@ export default function SplashScreen() {
         fadeOut ? "opacity-0" : "opacity-100"
       }`}
     >
-      {/* ピンク背景 */}
-      <div className="absolute inset-0" style={{ background: "#9d174d" }} />
-
-      {/* ksl-logo.jpg を全体表示（contain で全部見える） */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: "url(/ksl-hero.jpg)",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center top",
-          opacity: 0.22,
-        }}
-      />
-
-      {/* 暗めオーバーレイ */}
-      <div
-        className="absolute inset-0"
-        style={{ background: "rgba(157,23,77,0.55)" }}
-      />
+      {/* ダーク背景 */}
+      <div className="absolute inset-0" style={{ background: "#0d0010" }} />
 
       {/* コンテンツ */}
-      <div className="relative flex flex-col items-center gap-6 animate-splash-logo">
-        {/* ロゴ: ksl-logo.jpg を表示 */}
-        <div className="w-56 h-80 rounded-3xl shadow-2xl overflow-hidden">
-          <img
-            src="/ksl-logo.jpg"
-            alt="KSL"
-            className="w-full h-full object-cover"
-            style={{ objectPosition: "center center" }}
-          />
-        </div>
-
-        <div className="text-center">
-          <p className="text-white/60 text-[10px] tracking-[0.4em] uppercase mb-1">
-            Kagoshima
-          </p>
-          <h1 className="text-white text-2xl font-bold tracking-widest leading-tight drop-shadow-lg">
-            SUPER LEAGUE
-          </h1>
-        </div>
+      <div className="relative flex flex-col items-center gap-8 animate-splash-logo px-12">
+        {/* KSL ロゴ */}
+        <img
+          src="/ksl-logo.png"
+          alt="KSL"
+          className="w-64 object-contain drop-shadow-2xl"
+        />
 
         {/* ローディングドット */}
-        <div className="flex items-center gap-2 mt-1">
+        <div className="flex items-center gap-2">
           <span
             className="w-2 h-2 rounded-full animate-loading-dot"
-            style={{ background: "#e3c060" }}
+            style={{ background: "#ec4899" }}
           />
           <span
             className="w-2 h-2 rounded-full animate-loading-dot animation-delay-200"
-            style={{ background: "#e3c060" }}
+            style={{ background: "#ec4899" }}
           />
           <span
             className="w-2 h-2 rounded-full animate-loading-dot animation-delay-400"
-            style={{ background: "#e3c060" }}
+            style={{ background: "#ec4899" }}
           />
         </div>
       </div>
-
-      {/* タグライン */}
-      <p className="absolute bottom-16 text-white/40 text-xs tracking-[0.3em] animate-fade-in animation-delay-700">
-        すべてを、背負え。
-      </p>
     </div>
   );
 }

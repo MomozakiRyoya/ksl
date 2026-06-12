@@ -230,6 +230,12 @@
       "type": "file"
     },
     {
+      "path": "src/components/pwa/SplashScreen.tsx",
+      "accessCount": 5,
+      "lastAccessed": 1781251861157,
+      "type": "file"
+    },
+    {
       "path": "src/components/home/NewsCarousel.tsx",
       "accessCount": 4,
       "lastAccessed": 1779276879142,
@@ -251,12 +257,6 @@
       "path": "src/app/api/admin/structures/route.ts",
       "accessCount": 3,
       "lastAccessed": 1779275334767,
-      "type": "file"
-    },
-    {
-      "path": "src/components/pwa/SplashScreen.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1781187939302,
       "type": "file"
     },
     {
