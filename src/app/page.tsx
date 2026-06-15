@@ -121,7 +121,7 @@ export default async function HomePage() {
       playerName: s.playerName,
       teamId: s.teamId,
       teamName: s.teamName,
-      leagueId: teamLeagueMap[s.teamId] ?? "premier",
+      leagueId: teamLeagueMap[s.teamId] ?? "spade",
       goals: s.totalPoints,
       assists: s.games > 0 ? Math.round((s.itmCount / s.games) * 100) : 0,
       games: s.games,
@@ -149,15 +149,9 @@ export default async function HomePage() {
   const teamCount = teams.length;
   const divisionCount = leagues.length;
   const maxRoundNumber =
-    rounds.length > 0
-      ? Math.max(
-          ...rounds
-            .filter((r) => r.leagueId === "premier")
-            .map((r) => r.roundNumber),
-        )
-      : 0;
+    rounds.length > 0 ? Math.max(...rounds.map((r) => r.roundNumber)) : 0;
   const latestFinishedRound = rounds
-    .filter((r) => r.leagueId === "premier" && r.status === "finished")
+    .filter((r) => r.status === "finished")
     .sort((a, b) => b.roundNumber - a.roundNumber)[0];
 
   return (

@@ -8,13 +8,9 @@ export default async function PlayersPage() {
     getPlayers(),
     getPlayerStats(),
   ]);
-  const premierPlayers = allPlayers.filter((p) => p.leagueId === "premier");
-  const premierStats = allStats.filter((s) => s.leagueId === "premier");
-
-  // 得点王（最多得点者）を特定
-  const topScorer = premierStats.reduce(
+  const topScorer = allStats.reduce(
     (top, s) => (s.goals > (top?.goals ?? -1) ? s : top),
-    null as (typeof premierStats)[0] | null,
+    null as (typeof allStats)[0] | null,
   );
 
   return (
@@ -30,7 +26,7 @@ export default async function PlayersPage() {
             PLAYERS
           </h1>
           <p className="text-sm text-slate-400 mt-1">
-            Premier League · {premierPlayers.length}名登録
+            {allPlayers.length}名登録
           </p>
         </div>
       </div>
@@ -38,8 +34,8 @@ export default async function PlayersPage() {
       {/* コンテンツ */}
       <div className="px-4 py-5">
         <PositionFilter
-          players={premierPlayers}
-          stats={premierStats}
+          players={allPlayers}
+          stats={allStats}
           topScorerPlayerId={topScorer?.playerId ?? ""}
         />
       </div>
