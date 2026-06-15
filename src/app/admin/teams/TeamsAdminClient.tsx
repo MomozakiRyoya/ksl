@@ -6,12 +6,7 @@ import ImageUpload from "@/components/ui/ImageUpload";
 
 const DIVISIONS = [{ key: "regular", label: "League", color: "#1e293b" }];
 
-const LEAGUE_OPTIONS = [
-  { value: "spade", label: "♠ Division" },
-  { value: "diamond", label: "♦ Division" },
-  { value: "club", label: "♣ Division" },
-  { value: "heart", label: "♥ Division" },
-];
+const LEAGUE_OPTIONS = [{ value: "ksl", label: "KSL" }];
 
 type FormData = {
   name: string;
@@ -27,7 +22,7 @@ type FormData = {
   logoUrl: string | null;
 };
 
-const defaultForm = (leagueId = "spade"): FormData => ({
+const defaultForm = (leagueId = "ksl"): FormData => ({
   name: "",
   slug: "",
   leagueId,
@@ -85,7 +80,7 @@ function TeamForm({
   saving: boolean;
 }) {
   const [form, setForm] = useState<FormData>({
-    ...defaultForm("spade"),
+    ...defaultForm("ksl"),
     ...initial,
   });
 

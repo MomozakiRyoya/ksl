@@ -17,11 +17,8 @@ interface Match {
 }
 
 const LEAGUES = [
-  { value: "", label: "全ディビジョン" },
-  { value: "spade", label: "♠ Division" },
-  { value: "diamond", label: "♦ Division" },
-  { value: "club", label: "♣ Division" },
-  { value: "heart", label: "♥ Division" },
+  { value: "", label: "全チーム" },
+  { value: "ksl", label: "KSL" },
 ];
 
 const STATUS_OPTIONS = [
@@ -67,8 +64,8 @@ type RoundForm = {
 
 const defaultRoundForm = (): RoundForm => ({
   name: "",
-  leagueId: "spade",
-  leagueName: "♠ Division",
+  leagueId: "ksl",
+  leagueName: "KSL",
   roundNumber: "",
   date: "",
   startTime: "18:00",
