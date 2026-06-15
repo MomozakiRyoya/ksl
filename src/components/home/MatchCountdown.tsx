@@ -6,7 +6,7 @@ import type { Round, League } from "@/lib/types/app";
 import AutoScroll from "@/components/ui/AutoScroll";
 import { getRoundStartTime, formatRoundDateTime } from "@/lib/start-time";
 
-const TARGET_LEAGUES = ["premier", "spade", "diamond", "club", "heart"];
+const TARGET_LEAGUES = ["spade", "diamond"];
 
 function getMatchTime(r: Round): number {
   const time = getRoundStartTime(r);

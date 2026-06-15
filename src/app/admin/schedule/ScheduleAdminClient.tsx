@@ -18,7 +18,8 @@ interface Match {
 
 const LEAGUES = [
   { value: "", label: "全チーム" },
-  { value: "ksl", label: "KSL" },
+  { value: "spade", label: "♠ スペード" },
+  { value: "diamond", label: "♦ ダイヤ" },
 ];
 
 const STATUS_OPTIONS = [
@@ -64,8 +65,8 @@ type RoundForm = {
 
 const defaultRoundForm = (): RoundForm => ({
   name: "",
-  leagueId: "ksl",
-  leagueName: "KSL",
+  leagueId: "spade",
+  leagueName: "♠ スペード",
   roundNumber: "",
   date: "",
   startTime: "18:00",

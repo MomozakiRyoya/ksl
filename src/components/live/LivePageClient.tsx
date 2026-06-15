@@ -84,7 +84,11 @@ export default function LivePageClient({
 
   const nextRounds = rounds.filter((r) => r.status === "next");
   const finishedRounds = rounds
-    .filter((r) => r.status === "finished" && r.leagueId === "premier")
+    .filter(
+      (r) =>
+        r.status === "finished" &&
+        (r.leagueId === "spade" || r.leagueId === "diamond"),
+    )
     .slice(-3)
     .reverse();
 

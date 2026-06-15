@@ -4,9 +4,15 @@ import { useState } from "react";
 import type { Team } from "@/lib/types/app";
 import ImageUpload from "@/components/ui/ImageUpload";
 
-const DIVISIONS = [{ key: "regular", label: "League", color: "#1e293b" }];
+const DIVISIONS = [
+  { key: "spade", label: "♠ スペード", color: "#1e293b" },
+  { key: "diamond", label: "♦ ダイヤ", color: "#b91c1c" },
+];
 
-const LEAGUE_OPTIONS = [{ value: "ksl", label: "KSL" }];
+const LEAGUE_OPTIONS = [
+  { value: "spade", label: "♠ スペード" },
+  { value: "diamond", label: "♦ ダイヤ" },
+];
 
 type FormData = {
   name: string;
@@ -22,7 +28,7 @@ type FormData = {
   logoUrl: string | null;
 };
 
-const defaultForm = (leagueId = "ksl"): FormData => ({
+const defaultForm = (leagueId = "spade"): FormData => ({
   name: "",
   slug: "",
   leagueId,
@@ -80,7 +86,7 @@ function TeamForm({
   saving: boolean;
 }) {
   const [form, setForm] = useState<FormData>({
-    ...defaultForm("ksl"),
+    ...defaultForm("spade"),
     ...initial,
   });
 
@@ -255,7 +261,7 @@ export default function TeamsAdminClient({
   initialTeams: Team[];
 }) {
   const [teams, setTeams] = useState(initialTeams);
-  const [tab, setTab] = useState("regular");
+  const [tab, setTab] = useState("spade");
   const [modal, setModal] = useState<"create" | "edit" | "delete" | null>(null);
   const [target, setTarget] = useState<Team | null>(null);
   const [saving, setSaving] = useState(false);
@@ -266,7 +272,7 @@ export default function TeamsAdminClient({
     setTimeout(() => setToast(""), 3000);
   };
 
-  const filtered = teams.filter((t) => t.leagueId !== "premier");
+  const filtered = teams.filter((t) => t.leagueId === tab);
 
   const toFormData = (t: Team): Partial<FormData> => ({
     name: t.name,
@@ -392,21 +398,15 @@ export default function TeamsAdminClient({
         {DIVISIONS.map((d) => (
           <button
             key={d.key}
-            onClick={() => setTab(d.key as "premier" | "regular")}
+            onClick={() => setTab(d.key)}
             className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
               tab === d.key ? "text-white" : "text-white/40 hover:text-white/70"
             }`}
-            style={tab === d.key ? { background: "#be185d" } : {}}
+            style={tab === d.key ? { background: d.color } : {}}
           >
             {d.label}
             <span className="ml-2 text-xs opacity-60">
-              {
-                teams.filter((t) =>
-                  d.key === "premier"
-                    ? t.leagueId === "premier"
-                    : t.leagueId !== "premier",
-                ).length
-              }
+              {teams.filter((t) => t.leagueId === d.key).length}
             </span>
           </button>
         ))}
@@ -423,11 +423,6 @@ export default function TeamsAdminClient({
                 <th className="text-left px-4 lg:px-5 py-3 text-xs font-semibold text-white/40 uppercase tracking-wider">
                   チーム名
                 </th>
-                {tab === "regular" && (
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-white/40 uppercase tracking-wider hidden sm:table-cell">
-                    ディビジョン
-                  </th>
-                )}
                 <th className="text-left px-4 py-3 text-xs font-semibold text-white/40 uppercase tracking-wider hidden md:table-cell">
                   キャプテン
                 </th>
@@ -462,11 +457,6 @@ export default function TeamsAdminClient({
                       <span className="text-sm text-white">{t.name}</span>
                     </div>
                   </td>
-                  {tab === "regular" && (
-                    <td className="px-4 py-3 text-sm text-white/60 hidden sm:table-cell">
-                      {t.leagueName}
-                    </td>
-                  )}
                   <td className="px-4 py-3 text-sm text-white/60 hidden md:table-cell">
                     {t.captainName || "-"}
                   </td>

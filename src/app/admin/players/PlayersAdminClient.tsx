@@ -26,7 +26,10 @@ type FormData = {
   userEmail: string;
 };
 
-const LEAGUE_IDS = [{ value: "ksl", label: "KSL" }];
+const LEAGUE_IDS = [
+  { value: "spade", label: "♠ スペード" },
+  { value: "diamond", label: "♦ ダイヤ" },
+];
 
 function Modal({
   title,
@@ -74,7 +77,7 @@ function PlayerForm({
   const [form, setForm] = useState<FormData>({
     name: "",
     teamId: "",
-    leagueId: "ksl",
+    leagueId: "spade",
     number: "",
     position: "FP",
     photoUrl: null,
@@ -207,7 +210,7 @@ export default function PlayersAdminClient({
   teams: Team[];
 }) {
   const [players, setPlayers] = useState(initialPlayers);
-  const [filterLeague, setFilterLeague] = useState("ksl");
+  const [filterLeague, setFilterLeague] = useState("spade");
   const [filterTeam, setFilterTeam] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [modal, setModal] = useState<"create" | "edit" | "delete" | null>(null);

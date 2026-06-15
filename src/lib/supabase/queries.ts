@@ -98,7 +98,7 @@ export async function fetchLeaguesFromSupabase(): Promise<League[]> {
   if (error || !data) throw new Error(error?.message ?? "leagues fetch failed");
 
   return data.map((l) => ({
-    id: l.id as string,
+    id: (l.slug as string) || (l.id as string),
     name: l.name as string,
     slug: (l.slug as string) ?? "",
     seasonId: "",

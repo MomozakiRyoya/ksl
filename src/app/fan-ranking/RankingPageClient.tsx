@@ -12,7 +12,9 @@ const RANK_COLORS: Record<number, { bg: string; text: string }> = {
 function StandingsList({ items }: { items: TeamStanding[] }) {
   if (items.length === 0) {
     return (
-      <p className="text-center text-sm text-slate-400 py-12">チームデータなし</p>
+      <p className="text-center text-sm text-slate-400 py-12">
+        チームデータなし
+      </p>
     );
   }
   return (
@@ -83,10 +85,7 @@ export default function RankingPageClient({
   leagues: League[];
   standings: Record<string, TeamStanding[]>;
 }) {
-  const [activeLeague, setActiveLeague] = useState(leagues[0]?.id ?? "premier");
-
-  const premierLeagues = leagues.filter((l) => l.id === "premier");
-  const regularLeagues = leagues.filter((l) => l.id !== "premier");
+  const [activeLeague, setActiveLeague] = useState(leagues[0]?.id ?? "spade");
 
   const activeItems = standings[activeLeague] ?? [];
 
@@ -114,70 +113,38 @@ export default function RankingPageClient({
           <h1 className="text-2xl font-black text-white tracking-widest">
             RANKING
           </h1>
-          <p className="text-white/40 text-xs mt-1">各リーグの現在の順位</p>
+          <p className="text-white/40 text-xs mt-1">
+            各ディビジョンの現在の順位
+          </p>
         </div>
       </div>
 
       <div className="px-4 pt-5 pb-8 space-y-4">
-        {/* タブ: プレミアリーグ */}
-        <div>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
-            Premier League
-          </p>
-          <div className="flex gap-1.5 flex-wrap">
-            {premierLeagues.map((l) => (
-              <button
-                key={l.id}
-                onClick={() => setActiveLeague(l.id)}
-                className="px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap"
-                style={
-                  activeLeague === l.id
-                    ? {
-                        background: "linear-gradient(135deg, #c9921e, #e3c060)",
-                        color: "#be185d",
-                      }
-                    : {
-                        background: "#f1f5f9",
-                        color: "#64748b",
-                      }
-                }
-              >
-                {l.name}
-              </button>
-            ))}
-          </div>
+        {/* ディビジョンタブ */}
+        <div className="flex gap-1.5 flex-wrap">
+          {leagues.map((l) => (
+            <button
+              key={l.id}
+              onClick={() => setActiveLeague(l.id)}
+              className="px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap"
+              style={
+                activeLeague === l.id
+                  ? {
+                      background: "linear-gradient(135deg, #c9921e, #e3c060)",
+                      color: "#be185d",
+                    }
+                  : {
+                      background: "#f1f5f9",
+                      color: "#64748b",
+                    }
+              }
+            >
+              {l.name}
+            </button>
+          ))}
         </div>
 
-        {/* タブ: レギュラーリーグ */}
-        <div>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
-            Regular League
-          </p>
-          <div className="flex gap-1.5 flex-wrap">
-            {regularLeagues.map((l) => (
-              <button
-                key={l.id}
-                onClick={() => setActiveLeague(l.id)}
-                className="px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap"
-                style={
-                  activeLeague === l.id
-                    ? {
-                        background: "linear-gradient(135deg, #c9921e, #e3c060)",
-                        color: "#be185d",
-                      }
-                    : {
-                        background: "#f1f5f9",
-                        color: "#64748b",
-                      }
-                }
-              >
-                {l.name}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 選択リーグのランキング */}
+        {/* 選択ディビジョンのランキング */}
         <div>
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
             {leagues.find((l) => l.id === activeLeague)?.name} 順位表

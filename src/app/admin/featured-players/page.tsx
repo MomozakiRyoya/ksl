@@ -20,7 +20,6 @@ export default async function AdminFeaturedPlayersPage() {
         .from("teams")
         .select("team_id, name, league_id")
         .eq("is_active", true)
-        .eq("league_id", "premier")
         .order("name"),
       admin
         .from("players")

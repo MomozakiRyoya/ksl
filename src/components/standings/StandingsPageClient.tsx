@@ -12,11 +12,8 @@ const SUB_TABS = ["順位表", "シミュレーター"] as const;
 type SubTab = (typeof SUB_TABS)[number];
 
 const LEAGUE_SHORT: Record<string, string> = {
-  premier: "プレミア",
-  spade: "スペード",
-  heart: "ハート",
-  diamond: "ダイヤ",
-  club: "クローバー",
+  spade: "♠ スペード",
+  diamond: "♦ ダイヤ",
 };
 
 function RankBadge({ rank }: { rank: number }) {
@@ -113,36 +110,13 @@ function StandingsTable({
         </span>
       </div>
       {standings.map((team, i) => {
-        const isPremier = leagueId === "premier";
-
         const rowStyle: React.CSSProperties = {
           animationDelay: `${i * 35}ms`,
-          background: isPremier
-            ? team.rank === 1
-              ? "rgba(201,146,30,0.12)"
-              : team.rank <= 3
-                ? "rgba(34,197,94,0.08)"
-                : team.rank === 6
-                  ? "rgba(239,68,68,0.07)"
-                  : undefined
-            : team.rank === 1
-              ? "rgba(201,146,30,0.12)"
-              : undefined,
-          borderLeft: isPremier
-            ? team.rank === 1
-              ? "3px solid rgba(201,146,30,0.7)"
-              : team.rank <= 3
-                ? "3px solid rgba(34,197,94,0.5)"
-                : team.rank === 6
-                  ? "3px solid rgba(239,68,68,0.5)"
-                  : "3px solid transparent"
-            : team.rank === 1
+          background: team.rank === 1 ? "rgba(201,146,30,0.12)" : undefined,
+          borderLeft:
+            team.rank === 1
               ? "3px solid rgba(201,146,30,0.7)"
               : "3px solid transparent",
-          borderBottom:
-            isPremier && team.rank === 3
-              ? "2px solid rgba(239,68,68,0.5)"
-              : undefined,
         };
 
         const rowClass =
@@ -228,7 +202,7 @@ interface Props {
 }
 
 export default function StandingsPageClient({ leagues, standings }: Props) {
-  const [activeLeague, setActiveLeague] = useState<string>("premier");
+  const [activeLeague, setActiveLeague] = useState<string>("spade");
   const [activeSubTab, setActiveSubTab] = useState<SubTab>("順位表");
 
   const currentLeague = leagues.find((l) => l.id === activeLeague);

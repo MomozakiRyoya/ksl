@@ -15,8 +15,9 @@ interface Props {
 }
 
 export default function StandingsSection({ leagues, standings }: Props) {
-  // プレミア以外はデフォルト閉じ
-  const [openLeagues, setOpenLeagues] = useState<Set<string>>(new Set(["premier"]));
+  const [openLeagues, setOpenLeagues] = useState<Set<string>>(
+    new Set(["spade"]),
+  );
 
   const toggle = (leagueId: string) => {
     setOpenLeagues((prev) => {
@@ -31,7 +32,6 @@ export default function StandingsSection({ leagues, standings }: Props) {
     <div className="space-y-2">
       {leagues.map((league) => {
         const leagueStandings = standings[league.id] ?? [];
-        const isPremier = league.id === "premier";
         const isOpen = openLeagues.has(league.id);
 
         return (
@@ -51,13 +51,19 @@ export default function StandingsSection({ leagues, standings }: Props) {
               {/* 開閉インジケーター */}
               <svg
                 className="w-4 h-4 text-slate-400 flex-shrink-0 transition-transform duration-200"
-                style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                style={{
+                  transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                }}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 strokeWidth={2}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
 
@@ -68,7 +74,9 @@ export default function StandingsSection({ leagues, standings }: Props) {
                 className="block border-t border-slate-100"
               >
                 {leagueStandings.length === 0 ? (
-                  <div className="px-4 py-3 text-xs text-slate-400">データなし</div>
+                  <div className="px-4 py-3 text-xs text-slate-400">
+                    データなし
+                  </div>
                 ) : (
                   leagueStandings.map((team, idx) => (
                     <div
@@ -78,13 +86,24 @@ export default function StandingsSection({ leagues, standings }: Props) {
                       <span
                         className="text-xs font-black tabular-nums w-5 text-center flex-shrink-0"
                         style={{
-                          color: idx === 0 ? "#c9921e" : idx === 1 ? "#64748b" : idx === 2 ? "#b45309" : "#94a3b8",
+                          color:
+                            idx === 0
+                              ? "#c9921e"
+                              : idx === 1
+                                ? "#64748b"
+                                : idx === 2
+                                  ? "#b45309"
+                                  : "#94a3b8",
                         }}
                       >
                         {team.rank}
                       </span>
                       {team.teamLogoUrl ? (
-                        <img src={team.teamLogoUrl} alt={team.teamName} className="w-7 h-7 rounded-full object-cover flex-shrink-0" />
+                        <img
+                          src={team.teamLogoUrl}
+                          alt={team.teamName}
+                          className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                        />
                       ) : (
                         <div
                           className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-black text-white flex-shrink-0"
@@ -96,9 +115,14 @@ export default function StandingsSection({ leagues, standings }: Props) {
                       <span className="flex-1 text-sm font-semibold text-slate-800 truncate">
                         {team.teamName}
                       </span>
-                      <span className="text-sm font-black tabular-nums flex-shrink-0" style={{ color: "#c9921e" }}>
+                      <span
+                        className="text-sm font-black tabular-nums flex-shrink-0"
+                        style={{ color: "#c9921e" }}
+                      >
                         {team.totalPoints}
-                        <span className="text-xs font-normal text-slate-400 ml-0.5">pt</span>
+                        <span className="text-xs font-normal text-slate-400 ml-0.5">
+                          pt
+                        </span>
                       </span>
                     </div>
                   ))

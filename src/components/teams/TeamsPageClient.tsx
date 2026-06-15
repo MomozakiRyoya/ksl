@@ -105,7 +105,7 @@ function LeagueSection({
   followedTeams: string[];
   defaultOpen?: boolean;
 }) {
-  const [isOpen, setIsOpen] = useState(defaultOpen ?? league.id === "premier");
+  const [isOpen, setIsOpen] = useState(defaultOpen ?? true);
 
   const teamsWithRank = teams.map((t) => {
     const standing = standings.find((s) => s.teamId === t.id);
@@ -165,15 +165,6 @@ function LeagueSection({
   );
 }
 
-const ALL_DIVISIONS = [
-  { key: "all", label: "すべて" },
-  { key: "premier", label: "PL" },
-  { key: "spade", label: "♠" },
-  { key: "diamond", label: "♦" },
-  { key: "club", label: "♣" },
-  { key: "heart", label: "♥" },
-];
-
 interface Props {
   teams: Team[];
   leagues: League[];
@@ -182,7 +173,6 @@ interface Props {
 
 export default function TeamsPageClient({ teams, leagues, standings }: Props) {
   const [query, setQuery] = useState("");
-  const [activeDiv, setActiveDiv] = useState<string>("all");
   const { followedTeams, mounted } = useFollowedTeams();
 
   const filtered = useMemo(() => {
@@ -195,11 +185,6 @@ export default function TeamsPageClient({ teams, leagues, standings }: Props) {
         t.slug.includes(q),
     );
   }, [query, teams]);
-
-  const visibleLeagues = useMemo(() => {
-    if (activeDiv === "all") return leagues;
-    return leagues.filter((l) => l.id === activeDiv);
-  }, [activeDiv, leagues]);
 
   return (
     <div className="max-w-lg lg:max-w-4xl mx-auto">
@@ -271,36 +256,6 @@ export default function TeamsPageClient({ teams, leagues, standings }: Props) {
           )}
         </div>
 
-        {filtered === null && (
-          <div className="flex gap-1.5 overflow-x-auto pb-2 mb-4 -mx-4 px-4 scroll-x-hidden">
-            {ALL_DIVISIONS.map((div) => {
-              const isActive = activeDiv === div.key;
-              return (
-                <button
-                  key={div.key}
-                  onClick={() => setActiveDiv(div.key)}
-                  className="flex-none px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 active:scale-95"
-                  style={
-                    isActive
-                      ? {
-                          background: "#be185d",
-                          color: "white",
-                          boxShadow: "0 2px 8px rgba(12,30,66,0.25)",
-                        }
-                      : {
-                          background: "white",
-                          color: "#64748b",
-                          border: "1px solid #e2e8f0",
-                        }
-                  }
-                >
-                  {div.label}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
         {filtered !== null ? (
           <div>
             {filtered.length === 0 ? (
@@ -357,16 +312,16 @@ export default function TeamsPageClient({ teams, leagues, standings }: Props) {
           </div>
         ) : (
           <div className="animate-fade-in">
-            {visibleLeagues.map((league) => {
+            {leagues.map((league) => {
               const leagueTeams = teams.filter((t) => t.leagueId === league.id);
               return (
                 <LeagueSection
-                  key={`${league.id}-${activeDiv}`}
+                  key={league.id}
                   league={league}
                   teams={leagueTeams}
                   standings={standings[league.id] ?? []}
                   followedTeams={mounted ? followedTeams : []}
-                  defaultOpen={activeDiv !== "all" || league.id === "premier"}
+                  defaultOpen={true}
                 />
               );
             })}

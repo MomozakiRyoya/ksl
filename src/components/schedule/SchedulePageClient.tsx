@@ -126,7 +126,7 @@ interface Props {
 }
 
 export default function SchedulePageClient({ leagues, rounds }: Props) {
-  const [activeLeague, setActiveLeague] = useState<string>("premier");
+  const [activeLeague, setActiveLeague] = useState<string>("spade");
 
   const allRoundsForLeague = rounds.filter((r) => r.leagueId === activeLeague);
   const regularRounds = allRoundsForLeague.filter((r) => !r.isPlayoff);
