@@ -1,11 +1,14 @@
 export const dynamic = "force-dynamic";
-import { getPlayers, getTeams } from "@/lib/data";
+import {
+  fetchPlayersFromSupabase,
+  fetchTeamsFromSupabase,
+} from "@/lib/supabase/queries";
 import PlayersAdminClient from "./PlayersAdminClient";
 
 export default async function AdminPlayersPage() {
   const [players, teams] = await Promise.all([
-    getPlayers().catch(() => []),
-    getTeams().catch(() => []),
+    fetchPlayersFromSupabase().catch(() => []),
+    fetchTeamsFromSupabase().catch(() => []),
   ]);
 
   const clientPlayers = players.map((p) => ({
