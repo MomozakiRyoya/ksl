@@ -37,9 +37,7 @@ export function AdminLoginForm({ supabaseUrl, supabaseAnonKey }: Props) {
     });
 
     if (authError) {
-      setError(
-        `エラー: ${authError.message} (${authError.status ?? "no status"})`,
-      );
+      setError("メールアドレスまたはパスワードが正しくありません");
       setLoading(false);
       return;
     }
