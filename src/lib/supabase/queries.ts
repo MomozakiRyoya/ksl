@@ -15,7 +15,7 @@ export async function fetchTeamsFromSupabase(): Promise<Team[]> {
     .select("*")
     .eq("is_active", true)
     .order("league_id")
-    .order("id");
+    .order("team_id");
 
   if (error || !data) throw new Error(error?.message ?? "teams fetch failed");
 

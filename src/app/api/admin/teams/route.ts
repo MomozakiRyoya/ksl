@@ -26,16 +26,14 @@ export async function POST(request: Request) {
   const supabase = await createClient();
 
   const teamId = body.teamId || body.slug || `team-${Date.now()}`;
-  const id = `${body.leagueId}-${teamId}`;
 
   const { data, error } = await supabase
     .from("teams")
     .insert({
-      id,
       team_id: teamId,
       name: body.name ?? "",
       slug: body.slug ?? teamId,
-      league_id: body.leagueId ?? "premier",
+      league_id: body.leagueId ?? "ksl",
       league_name: body.leagueName ?? "",
       home_color: body.homeColor ?? "#000000",
       captain: body.captain ?? "",
