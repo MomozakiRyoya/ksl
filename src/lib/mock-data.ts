@@ -22,16 +22,6 @@ export const MOCK_SEASON: Season = {
 
 export const MOCK_LEAGUES: League[] = [
   {
-    id: "premier",
-    name: "Premier League",
-    slug: "premier",
-    seasonId: "season-7",
-    order: 1,
-    color: "#c9921e",
-    description: "最上位ディビジョン",
-    maxTeams: 6,
-  },
-  {
     id: "spade",
     name: "♠ Division",
     slug: "spade",
