@@ -7,6 +7,17 @@ import ClientLayoutWrapper from "@/components/layout/ClientLayoutWrapper";
 export const metadata: Metadata = {
   title: "Kagoshima Super League",
   description: "鹿児島ポーカーチームリーグ公式アプリ",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ??
+      (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000"),
+  ),
+  openGraph: {
+    title: "Kagoshima Super League",
+    description: "鹿児島ポーカーチームリーグ公式アプリ",
+    images: [{ url: "/ksl-logo.png" }],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
