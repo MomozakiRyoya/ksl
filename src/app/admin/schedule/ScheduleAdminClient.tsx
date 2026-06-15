@@ -18,7 +18,6 @@ interface Match {
 
 const LEAGUES = [
   { value: "", label: "全ディビジョン" },
-  { value: "premier", label: "Premier League" },
   { value: "spade", label: "♠ Division" },
   { value: "diamond", label: "♦ Division" },
   { value: "club", label: "♣ Division" },
@@ -68,8 +67,8 @@ type RoundForm = {
 
 const defaultRoundForm = (): RoundForm => ({
   name: "",
-  leagueId: "premier",
-  leagueName: "Premier League",
+  leagueId: "spade",
+  leagueName: "♠ Division",
   roundNumber: "",
   date: "",
   startTime: "18:00",

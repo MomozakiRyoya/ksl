@@ -27,7 +27,6 @@ type FormData = {
 };
 
 const LEAGUE_IDS = [
-  { value: "premier", label: "Premier" },
   { value: "spade", label: "♠" },
   { value: "diamond", label: "♦" },
   { value: "club", label: "♣" },
@@ -80,7 +79,7 @@ function PlayerForm({
   const [form, setForm] = useState<FormData>({
     name: "",
     teamId: "",
-    leagueId: "premier",
+    leagueId: "spade",
     number: "",
     position: "FP",
     photoUrl: null,
@@ -213,7 +212,7 @@ export default function PlayersAdminClient({
   teams: Team[];
 }) {
   const [players, setPlayers] = useState(initialPlayers);
-  const [filterLeague, setFilterLeague] = useState("premier");
+  const [filterLeague, setFilterLeague] = useState("spade");
   const [filterTeam, setFilterTeam] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [modal, setModal] = useState<"create" | "edit" | "delete" | null>(null);

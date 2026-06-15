@@ -4,10 +4,7 @@ import { useState } from "react";
 import type { Team } from "@/lib/types/app";
 import ImageUpload from "@/components/ui/ImageUpload";
 
-const DIVISIONS = [
-  { key: "premier", label: "Premier League", color: "#c9921e" },
-  { key: "regular", label: "Regular League", color: "#1e293b" },
-];
+const DIVISIONS = [{ key: "regular", label: "League", color: "#1e293b" }];
 
 const LEAGUE_OPTIONS = [
   { value: "spade", label: "♠ Division" },
@@ -30,14 +27,11 @@ type FormData = {
   logoUrl: string | null;
 };
 
-const defaultForm = (leagueId = "premier"): FormData => ({
+const defaultForm = (leagueId = "spade"): FormData => ({
   name: "",
   slug: "",
   leagueId,
-  leagueName:
-    leagueId === "premier"
-      ? "Premier League"
-      : (LEAGUE_OPTIONS.find((l) => l.value === leagueId)?.label ?? ""),
+  leagueName: LEAGUE_OPTIONS.find((l) => l.value === leagueId)?.label ?? "",
   homeColor: "#c9921e",
   captain: "",
   description: "",
@@ -91,15 +85,12 @@ function TeamForm({
   saving: boolean;
 }) {
   const [form, setForm] = useState<FormData>({
-    ...defaultForm(isPremier ? "premier" : "spade"),
+    ...defaultForm("spade"),
     ...initial,
   });
 
   const handleLeague = (v: string) => {
-    const label =
-      v === "premier"
-        ? "Premier League"
-        : (LEAGUE_OPTIONS.find((l) => l.value === v)?.label ?? "");
+    const label = LEAGUE_OPTIONS.find((l) => l.value === v)?.label ?? "";
     setForm({ ...form, leagueId: v, leagueName: label });
   };
 
@@ -269,7 +260,7 @@ export default function TeamsAdminClient({
   initialTeams: Team[];
 }) {
   const [teams, setTeams] = useState(initialTeams);
-  const [tab, setTab] = useState<"premier" | "regular">("premier");
+  const [tab, setTab] = useState("regular");
   const [modal, setModal] = useState<"create" | "edit" | "delete" | null>(null);
   const [target, setTarget] = useState<Team | null>(null);
   const [saving, setSaving] = useState(false);
@@ -280,9 +271,7 @@ export default function TeamsAdminClient({
     setTimeout(() => setToast(""), 3000);
   };
 
-  const filtered = teams.filter((t) =>
-    tab === "premier" ? t.leagueId === "premier" : t.leagueId !== "premier",
-  );
+  const filtered = teams.filter((t) => t.leagueId !== "premier");
 
   const toFormData = (t: Team): Partial<FormData> => ({
     name: t.name,
@@ -529,7 +518,7 @@ export default function TeamsAdminClient({
       {modal === "create" && (
         <Modal title="新規チーム作成" onClose={() => setModal(null)}>
           <TeamForm
-            isPremier={tab === "premier"}
+            isPremier={false}
             onSave={handleCreate}
             onCancel={() => setModal(null)}
             saving={saving}
@@ -540,7 +529,7 @@ export default function TeamsAdminClient({
         <Modal title="チームを編集" onClose={() => setModal(null)}>
           <TeamForm
             initial={toFormData(target)}
-            isPremier={target.leagueId === "premier"}
+            isPremier={false}
             onSave={handleEdit}
             onCancel={() => setModal(null)}
             saving={saving}
