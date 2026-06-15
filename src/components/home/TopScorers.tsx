@@ -104,11 +104,6 @@ export default function TopScorers({
 }: {
   playerStats: PlayerStats[];
 }) {
-  const [tab, setTab] = useState<"premier" | "regular">("premier");
-
-  const premierStats = playerStats.filter((p) => p.leagueId === "premier");
-  const regularStats = playerStats.filter((p) => p.leagueId !== "premier");
-
   return (
     <section className="animate-fade-in">
       <div className="flex items-center justify-between mb-3">
@@ -128,31 +123,7 @@ export default function TopScorers({
         </h2>
       </div>
 
-      {/* タブ */}
-      <div
-        className="flex gap-1 mb-3 p-1 rounded-xl border border-slate-200 w-fit"
-        style={{ background: "#f8fafc" }}
-      >
-        {(["premier", "regular"] as const).map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className="px-4 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap"
-            style={
-              tab === t
-                ? {
-                    background: "linear-gradient(135deg, #c9921e, #e3c060)",
-                    color: "#be185d",
-                  }
-                : { color: "#94a3b8" }
-            }
-          >
-            {t === "premier" ? "プレミア" : "レギュラー"}
-          </button>
-        ))}
-      </div>
-
-      <RankingList players={tab === "premier" ? premierStats : regularStats} />
+      <RankingList players={playerStats} />
     </section>
   );
 }
