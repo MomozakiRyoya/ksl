@@ -27,7 +27,7 @@ export default function InfoPage() {
     {
       name: "YouTube",
       handle: "KSL 公式チャンネル",
-      href: "https://www.youtube.com/@KagoshimaSuperLeague",
+      href: "https://youtube.com/@kagoshimasuperleague?si=Z6bdOsLAYOsrhgjY",
       color: "#FF0000",
       icon: (
         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

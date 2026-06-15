@@ -334,7 +334,7 @@ export default async function HomePage() {
           <a
             href={
               latestVideo?.url ??
-              "https://www.youtube.com/@KagoshimaSuperLeague"
+              "https://youtube.com/@kagoshimasuperleague?si=Z6bdOsLAYOsrhgjY"
             }
             target="_blank"
             rel="noopener noreferrer"
