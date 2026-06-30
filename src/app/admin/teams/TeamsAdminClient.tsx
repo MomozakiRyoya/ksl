@@ -328,6 +328,8 @@ export default function TeamsAdminClient({
       body: JSON.stringify({
         name: data.name,
         slug: data.slug,
+        leagueId: data.leagueId,
+        leagueName: data.leagueName,
         homeColor: data.homeColor,
         captain: data.captain,
         description: data.description,

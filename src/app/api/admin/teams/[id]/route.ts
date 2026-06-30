@@ -32,6 +32,8 @@ export async function PATCH(
   const updates: Record<string, unknown> = {};
   if (body.name !== undefined) updates.name = body.name;
   if (body.slug !== undefined) updates.slug = body.slug;
+  if (body.leagueId !== undefined) updates.league_id = body.leagueId;
+  if (body.leagueName !== undefined) updates.league_name = body.leagueName;
   if (body.homeColor !== undefined) updates.home_color = body.homeColor;
   if (body.captain !== undefined) updates.captain = body.captain;
   if (body.description !== undefined) updates.description = body.description;
