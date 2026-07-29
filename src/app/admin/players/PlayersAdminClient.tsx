@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Team } from "@/lib/types/app";
+import type { LeagueOption } from "@/lib/supabase/queries";
 import ImageUpload from "@/components/ui/ImageUpload";
 
 interface Player {
@@ -25,11 +26,6 @@ type FormData = {
   photoUrl: string | null;
   userEmail: string;
 };
-
-const LEAGUE_IDS = [
-  { value: "spade", label: "♠ スペード" },
-  { value: "diamond", label: "♦ ダイヤ" },
-];
 
 function Modal({
   title,
@@ -64,12 +60,14 @@ function Modal({
 function PlayerForm({
   initial,
   teams,
+  leagues,
   onSave,
   onCancel,
   saving,
 }: {
   initial?: Partial<FormData>;
   teams: Team[];
+  leagues: LeagueOption[];
   onSave: (d: FormData) => void;
   onCancel: () => void;
   saving: boolean;
@@ -77,7 +75,7 @@ function PlayerForm({
   const [form, setForm] = useState<FormData>({
     name: "",
     teamId: "",
-    leagueId: "spade",
+    leagueId: leagues[0]?.id ?? "",
     number: "",
     position: "FP",
     photoUrl: null,
@@ -138,9 +136,9 @@ function PlayerForm({
             }
             className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none"
           >
-            {LEAGUE_IDS.map((l) => (
-              <option key={l.value} value={l.value}>
-                {l.label}
+            {leagues.map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.name}
               </option>
             ))}
           </select>
@@ -205,12 +203,14 @@ function rawToPlayer(d: Record<string, unknown>, teams: Team[]): Player {
 export default function PlayersAdminClient({
   initialPlayers,
   teams,
+  leagues,
 }: {
   initialPlayers: Player[];
   teams: Team[];
+  leagues: LeagueOption[];
 }) {
   const [players, setPlayers] = useState(initialPlayers);
-  const [filterLeague, setFilterLeague] = useState("spade");
+  const [filterLeague, setFilterLeague] = useState(leagues[0]?.id ?? "");
   const [filterTeam, setFilterTeam] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [modal, setModal] = useState<"create" | "edit" | "delete" | null>(null);
@@ -378,9 +378,9 @@ export default function PlayersAdminClient({
               }}
               className="px-3 py-2 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none"
             >
-              {LEAGUE_IDS.map((l) => (
-                <option key={l.value} value={l.value}>
-                  {l.label}
+              {leagues.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.name}
                 </option>
               ))}
             </select>
@@ -513,6 +513,7 @@ export default function PlayersAdminClient({
         <Modal title="新規選手作成" onClose={() => setModal(null)}>
           <PlayerForm
             teams={teams}
+            leagues={leagues}
             onSave={handleCreate}
             onCancel={() => setModal(null)}
             saving={saving}
@@ -524,6 +525,7 @@ export default function PlayersAdminClient({
         <Modal title="選手を編集" onClose={() => setModal(null)}>
           <PlayerForm
             teams={teams}
+            leagues={leagues}
             initial={toFormData(target)}
             onSave={handleEdit}
             onCancel={() => setModal(null)}

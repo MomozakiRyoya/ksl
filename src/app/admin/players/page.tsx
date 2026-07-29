@@ -2,13 +2,15 @@ export const dynamic = "force-dynamic";
 import {
   fetchPlayersFromSupabase,
   fetchTeamsFromSupabase,
+  fetchLeagueOptionsFromSupabase,
 } from "@/lib/supabase/queries";
 import PlayersAdminClient from "./PlayersAdminClient";
 
 export default async function AdminPlayersPage() {
-  const [players, teams] = await Promise.all([
+  const [players, teams, leagues] = await Promise.all([
     fetchPlayersFromSupabase().catch(() => []),
     fetchTeamsFromSupabase().catch(() => []),
+    fetchLeagueOptionsFromSupabase().catch(() => []),
   ]);
 
   const clientPlayers = players.map((p) => ({
@@ -23,5 +25,11 @@ export default async function AdminPlayersPage() {
     userEmail: p.userEmail ?? null,
   }));
 
-  return <PlayersAdminClient initialPlayers={clientPlayers} teams={teams} />;
+  return (
+    <PlayersAdminClient
+      initialPlayers={clientPlayers}
+      teams={teams}
+      leagues={leagues}
+    />
+  );
 }

@@ -2,17 +2,8 @@
 
 import { useState } from "react";
 import type { Team } from "@/lib/types/app";
+import type { LeagueOption } from "@/lib/supabase/queries";
 import ImageUpload from "@/components/ui/ImageUpload";
-
-const DIVISIONS = [
-  { key: "spade", label: "♠ スペード", color: "#1e293b" },
-  { key: "diamond", label: "♦ ダイヤ", color: "#b91c1c" },
-];
-
-const LEAGUE_OPTIONS = [
-  { value: "spade", label: "♠ スペード" },
-  { value: "diamond", label: "♦ ダイヤ" },
-];
 
 type FormData = {
   name: string;
@@ -28,19 +19,22 @@ type FormData = {
   logoUrl: string | null;
 };
 
-const defaultForm = (leagueId = "spade"): FormData => ({
-  name: "",
-  slug: "",
-  leagueId,
-  leagueName: LEAGUE_OPTIONS.find((l) => l.value === leagueId)?.label ?? "",
-  homeColor: "#c9921e",
-  captain: "",
-  description: "",
-  twitterUrl: "",
-  instagramUrl: "",
-  isActive: true,
-  logoUrl: null,
-});
+const defaultForm = (leagues: LeagueOption[], leagueId?: string): FormData => {
+  const lid = leagueId ?? leagues[0]?.id ?? "";
+  return {
+    name: "",
+    slug: "",
+    leagueId: lid,
+    leagueName: leagues.find((l) => l.id === lid)?.name ?? "",
+    homeColor: "#c9921e",
+    captain: "",
+    description: "",
+    twitterUrl: "",
+    instagramUrl: "",
+    isActive: true,
+    logoUrl: null,
+  };
+};
 
 function Modal({
   title,
@@ -75,23 +69,25 @@ function Modal({
 function TeamForm({
   initial,
   isPremier,
+  leagues,
   onSave,
   onCancel,
   saving,
 }: {
   initial?: Partial<FormData>;
   isPremier: boolean;
+  leagues: LeagueOption[];
   onSave: (d: FormData) => void;
   onCancel: () => void;
   saving: boolean;
 }) {
   const [form, setForm] = useState<FormData>({
-    ...defaultForm("spade"),
+    ...defaultForm(leagues),
     ...initial,
   });
 
   const handleLeague = (v: string) => {
-    const label = LEAGUE_OPTIONS.find((l) => l.value === v)?.label ?? "";
+    const label = leagues.find((l) => l.id === v)?.name ?? "";
     setForm({ ...form, leagueId: v, leagueName: label });
   };
 
@@ -142,9 +138,9 @@ function TeamForm({
             onChange={(e) => handleLeague(e.target.value)}
             className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none"
           >
-            {LEAGUE_OPTIONS.map((l) => (
-              <option key={l.value} value={l.value}>
-                {l.label}
+            {leagues.map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.name}
               </option>
             ))}
           </select>
@@ -257,11 +253,13 @@ function rawToTeam(d: Record<string, unknown>): Team {
 
 export default function TeamsAdminClient({
   initialTeams,
+  leagues,
 }: {
   initialTeams: Team[];
+  leagues: LeagueOption[];
 }) {
   const [teams, setTeams] = useState(initialTeams);
-  const [tab, setTab] = useState("spade");
+  const [tab, setTab] = useState(leagues[0]?.id ?? "");
   const [modal, setModal] = useState<"create" | "edit" | "delete" | null>(null);
   const [target, setTarget] = useState<Team | null>(null);
   const [saving, setSaving] = useState(false);
@@ -397,18 +395,18 @@ export default function TeamsAdminClient({
         className="flex gap-1 mb-6 p-1 rounded-xl border border-white/8 w-fit"
         style={{ background: "#0a1628" }}
       >
-        {DIVISIONS.map((d) => (
+        {leagues.map((d) => (
           <button
-            key={d.key}
-            onClick={() => setTab(d.key)}
+            key={d.id}
+            onClick={() => setTab(d.id)}
             className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
-              tab === d.key ? "text-white" : "text-white/40 hover:text-white/70"
+              tab === d.id ? "text-white" : "text-white/40 hover:text-white/70"
             }`}
-            style={tab === d.key ? { background: d.color } : {}}
+            style={tab === d.id ? { background: d.color } : {}}
           >
-            {d.label}
+            {d.name}
             <span className="ml-2 text-xs opacity-60">
-              {teams.filter((t) => t.leagueId === d.key).length}
+              {teams.filter((t) => t.leagueId === d.id).length}
             </span>
           </button>
         ))}
@@ -506,6 +504,7 @@ export default function TeamsAdminClient({
         <Modal title="新規チーム作成" onClose={() => setModal(null)}>
           <TeamForm
             isPremier={false}
+            leagues={leagues}
             onSave={handleCreate}
             onCancel={() => setModal(null)}
             saving={saving}
@@ -517,6 +516,7 @@ export default function TeamsAdminClient({
           <TeamForm
             initial={toFormData(target)}
             isPremier={false}
+            leagues={leagues}
             onSave={handleEdit}
             onCancel={() => setModal(null)}
             saving={saving}

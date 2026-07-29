@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       player_id: body.playerId || `${body.teamId}-${Date.now()}`,
       name: body.name ?? "",
       team_id: body.teamId ?? "",
-      league_id: body.leagueId ?? "",
+      league_id: body.leagueId ?? null,
       position: body.position ?? "FP",
       number: body.number ?? 0,
       photo_url: body.photoUrl ?? null,

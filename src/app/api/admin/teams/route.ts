@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       team_id: teamId,
       name: body.name ?? "",
       slug: body.slug ?? teamId,
-      league_id: body.leagueId ?? "spade",
+      league_id: body.leagueId ?? null,
       league_name: body.leagueName ?? "",
       home_color: body.homeColor ?? "#000000",
       captain: body.captain ?? "",

@@ -109,6 +109,36 @@ export async function fetchLeaguesFromSupabase(): Promise<League[]> {
   }));
 }
 
+export type LeagueOption = {
+  id: string;
+  name: string;
+  slug: string;
+  color: string;
+};
+
+// 管理画面用: teams.league_id / players.league_id には外部キー制約が無く、
+// 実データは leagues.slug と同じ文字列(例: "spade")で保存されている
+// (公開サイト側の fetchLeaguesFromSupabase も id を slug に差し替えている)。
+// そのため管理画面の選択肢/タブ識別子にも leagues.id(UUID)ではなく slug を使う。
+export async function fetchLeagueOptionsFromSupabase(): Promise<
+  LeagueOption[]
+> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("leagues")
+    .select("id, name, slug, color")
+    .order("order_num");
+
+  if (error || !data) throw new Error(error?.message ?? "leagues fetch failed");
+
+  return data.map((l) => ({
+    id: l.slug as string,
+    name: l.name as string,
+    slug: (l.slug as string) ?? "",
+    color: (l.color as string) ?? "#000000",
+  }));
+}
+
 export async function fetchRoundsFromSupabase(): Promise<Round[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
