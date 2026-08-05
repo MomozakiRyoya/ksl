@@ -128,12 +128,14 @@ function MatchCard({
           className="pt-2.5 flex items-center justify-between"
           style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
         >
-          <span
-            className="text-[10px] truncate"
-            style={{ color: "rgba(255,255,255,0.4)" }}
-          >
-            📍 {round.venue}
-          </span>
+          {round.venue && (
+            <span
+              className="text-[10px] truncate"
+              style={{ color: "rgba(255,255,255,0.4)" }}
+            >
+              📍 {round.venue}
+            </span>
+          )}
           {round.format && (
             <span
               className="text-[10px] ml-2 truncate"

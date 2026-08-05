@@ -59,7 +59,7 @@ export default async function DashboardPage() {
             {nextRound.name}
           </p>
           <p className="text-sm text-white/50 mt-1">
-            {nextRound.date} · {nextRound.venue}
+            {[nextRound.date, nextRound.venue].filter(Boolean).join(" · ")}
           </p>
         </div>
       )}

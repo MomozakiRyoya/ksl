@@ -70,7 +70,7 @@ const defaultRoundForm = (): RoundForm => ({
   roundNumber: "",
   date: "",
   startTime: "18:00",
-  venue: "sbmHARUYOSHI",
+  venue: "",
   venueUrl: "",
   format: "",
   status: "scheduled",
@@ -358,7 +358,7 @@ function MatchEntry({
     <Modal title={`${round.name} — 試合結果入力`} onClose={onClose}>
       <div className="mb-3 flex items-center justify-between">
         <p className="text-xs text-white/40">
-          {round.date} · {round.venue} · {round.format}
+          {[round.date, round.venue, round.format].filter(Boolean).join(" · ")}
         </p>
         <button
           onClick={addMatch}

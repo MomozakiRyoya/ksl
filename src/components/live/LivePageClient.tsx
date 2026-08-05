@@ -143,27 +143,29 @@ export default function LivePageClient({
                   <p className="font-bold text-slate-900 text-base">
                     {round.leagueName} {round.name}
                   </p>
-                  <div className="flex items-center gap-1.5 mt-1.5 text-xs text-slate-500">
-                    <svg
-                      className="w-3.5 h-3.5 text-slate-400 flex-shrink-0"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    {round.venue}
-                  </div>
+                  {round.venue && (
+                    <div className="flex items-center gap-1.5 mt-1.5 text-xs text-slate-500">
+                      <svg
+                        className="w-3.5 h-3.5 text-slate-400 flex-shrink-0"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                      {round.venue}
+                    </div>
+                  )}
                   {league && (
                     <div className="mt-3 pt-3 border-t border-slate-100">
                       <p className="text-xs text-slate-400 font-medium mb-2 uppercase tracking-wide">
@@ -422,7 +424,7 @@ export default function LivePageClient({
                   {round.leagueName} {round.name}
                 </p>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  {round.date} @ {round.venue}
+                  {[round.date, round.venue].filter(Boolean).join(" @ ")}
                 </p>
               </div>
               <svg
