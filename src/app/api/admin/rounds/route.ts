@@ -37,23 +37,31 @@ export async function POST(request: Request) {
   const { data, error } = await admin
     .from("rounds")
     .insert({
-      id: `round-${Date.now()}`,
+      // rounds.id は uuid 型。`round-<timestamp>` のような文字列は
+      // invalid input syntax for type uuid で INSERT が必ず失敗する
+      id: crypto.randomUUID(),
       name: body.name ?? "",
-      league_id: body.leagueId ?? "",
+      league_id: body.leagueId || null,
       league_name: body.leagueName ?? "",
       round_number: body.roundNumber ?? 0,
-      date: body.date ?? "",
+      // date は date 型。未入力時の "" は不正な値になるため null を入れる
+      date: body.date || null,
+      start_time: body.startTime || null,
       venue: body.venue ?? "",
-      venue_url: body.venueUrl ?? null,
+      venue_url: body.venueUrl || null,
       status: body.status ?? "scheduled",
       is_playoff: body.isPlayoff ?? false,
       format: body.format ?? "",
+      structure_id: body.structureId || null,
     })
     .select()
     .single();
 
   if (error || !data)
-    return NextResponse.json({ error: "作成に失敗しました" }, { status: 500 });
+    return NextResponse.json(
+      { error: `作成に失敗しました: ${error?.message ?? "unknown error"}` },
+      { status: 500 },
+    );
   revalidatePath("/schedule");
   revalidatePath("/");
   return NextResponse.json(data);
