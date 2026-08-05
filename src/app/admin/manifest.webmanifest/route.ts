@@ -13,7 +13,7 @@ export async function GET() {
       scope: "/admin",
       display: "standalone",
       background_color: "#060b14",
-      theme_color: "#be185d",
+      theme_color: "#0c1e42",
       orientation: "portrait",
       icons: [
         { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },

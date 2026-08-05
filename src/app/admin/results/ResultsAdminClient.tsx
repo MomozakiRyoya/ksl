@@ -62,7 +62,7 @@ function Modal({
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm sm:px-4">
       <div
         className="w-full sm:max-w-2xl rounded-t-2xl sm:rounded-2xl border-t sm:border border-white/10 shadow-2xl max-h-[90vh] flex flex-col"
-        style={{ background: "#be185d" }}
+        style={{ background: "#0c1e42" }}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/8 flex-shrink-0">
           <h2 className="text-base font-bold text-white">{title}</h2>
@@ -193,7 +193,7 @@ function ResultFormUI({
                         playerName: "",
                       })
                     }
-                    className="w-full px-1 py-1 text-xs rounded border border-white/10 bg-[#be185d] text-white outline-none focus:border-amber-500/50"
+                    className="w-full px-1 py-1 text-xs rounded border border-white/10 bg-[#0c1e42] text-white outline-none focus:border-amber-500/50"
                   >
                     <option value="">チーム</option>
                     {teams.map((t) => (
@@ -218,7 +218,7 @@ function ResultFormUI({
                           playerName: pl?.name ?? "",
                         });
                       }}
-                      className="w-full px-1 py-1 text-xs rounded border border-white/10 bg-[#be185d] text-white outline-none focus:border-amber-500/50 disabled:opacity-40"
+                      className="w-full px-1 py-1 text-xs rounded border border-white/10 bg-[#0c1e42] text-white outline-none focus:border-amber-500/50 disabled:opacity-40"
                     >
                       <option value="">選手を選択</option>
                       {teamPlayers.map((pl) => (
@@ -286,7 +286,7 @@ function ResultFormUI({
           className="flex-1 py-2.5 rounded-xl text-sm font-bold disabled:opacity-40"
           style={{
             background: "linear-gradient(135deg, #c9921e, #e3c060)",
-            color: "#be185d",
+            color: "#0c1e42",
           }}
         >
           {saving ? "保存中..." : "保存する"}
@@ -724,7 +724,7 @@ export default function ResultsAdminClient({
               className="px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap"
               style={{
                 background: "linear-gradient(135deg, #c9921e, #e3c060)",
-                color: "#be185d",
+                color: "#0c1e42",
               }}
             >
               + 結果を追加
@@ -747,7 +747,7 @@ export default function ResultsAdminClient({
                   setSelectedLeagueId(e.target.value);
                   setSelectedRoundId("");
                 }}
-                className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none"
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#0c1e42] text-white outline-none"
               >
                 <option value="">-- すべてのリーグ --</option>
                 {leagues.map((l) => (
@@ -765,7 +765,7 @@ export default function ResultsAdminClient({
                 value={selectedRoundId}
                 onChange={(e) => setSelectedRoundId(e.target.value)}
                 disabled={!selectedLeagueId}
-                className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none disabled:opacity-40"
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#0c1e42] text-white outline-none disabled:opacity-40"
               >
                 <option value="">-- すべての節 --</option>
                 {filteredRounds.map((r) => (
@@ -779,7 +779,7 @@ export default function ResultsAdminClient({
 
           <div
             className="rounded-xl border border-white/8 overflow-hidden"
-            style={{ background: "#be185d" }}
+            style={{ background: "#0c1e42" }}
           >
             {allLoading && (
               <div className="py-12 text-center text-sm text-white/30">
@@ -888,7 +888,7 @@ export default function ResultsAdminClient({
                   setSelectedLeagueId(e.target.value);
                   setSelectedRoundId("");
                 }}
-                className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none"
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#0c1e42] text-white outline-none"
               >
                 <option value="">-- リーグを選択 --</option>
                 {leagues.map((l) => (
@@ -906,7 +906,7 @@ export default function ResultsAdminClient({
                 value={selectedRoundId}
                 onChange={(e) => setSelectedRoundId(e.target.value)}
                 disabled={!selectedLeagueId}
-                className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none disabled:opacity-40"
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#0c1e42] text-white outline-none disabled:opacity-40"
               >
                 <option value="">-- 節を選択 --</option>
                 {filteredRounds.map((r) => (
@@ -921,7 +921,7 @@ export default function ResultsAdminClient({
           {selectedRoundId && (
             <div
               className="rounded-xl border border-white/8 overflow-hidden"
-              style={{ background: "#be185d" }}
+              style={{ background: "#0c1e42" }}
             >
               {loading && (
                 <div className="py-12 text-center text-sm text-white/30">
@@ -1012,7 +1012,7 @@ export default function ResultsAdminClient({
               </div>
               <div
                 className="rounded-xl border border-white/8 overflow-hidden"
-                style={{ background: "#be185d" }}
+                style={{ background: "#0c1e42" }}
               >
                 {playerResultsLoading && (
                   <div className="py-8 text-center text-xs text-white/30">
@@ -1110,7 +1110,7 @@ export default function ResultsAdminClient({
           {!selectedRoundId && (
             <div
               className="rounded-xl border border-white/8 py-16 text-center"
-              style={{ background: "#be185d" }}
+              style={{ background: "#0c1e42" }}
             >
               <p className="text-sm text-white/30">節を選択してください</p>
             </div>
@@ -1229,7 +1229,7 @@ export default function ResultsAdminClient({
                 className="flex-1 py-2.5 rounded-xl text-sm font-bold disabled:opacity-40"
                 style={{
                   background: "linear-gradient(135deg, #c9921e, #e3c060)",
-                  color: "#be185d",
+                  color: "#0c1e42",
                 }}
               >
                 {prSaving ? "保存中..." : "保存する"}
@@ -1243,7 +1243,7 @@ export default function ResultsAdminClient({
         <div
           className="fixed bottom-6 right-6 px-5 py-3 rounded-xl text-sm font-semibold text-white shadow-lg"
           style={{
-            background: "#be185d",
+            background: "#0c1e42",
             border: "1px solid rgba(255,255,255,0.1)",
           }}
         >

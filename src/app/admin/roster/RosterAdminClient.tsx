@@ -87,7 +87,7 @@ export default function RosterAdminClient({ initialRosters, leagues, teams, roun
         <select
           value={filterLeague}
           onChange={(e) => { setFilterLeague(e.target.value); setFilterRound(""); }}
-          className="px-3 py-2 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none"
+          className="px-3 py-2 text-sm rounded-lg border border-white/10 bg-[#0c1e42] text-white outline-none"
         >
           <option value="">全リーグ</option>
           {leagues.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
@@ -96,7 +96,7 @@ export default function RosterAdminClient({ initialRosters, leagues, teams, roun
           value={filterRound}
           onChange={(e) => setFilterRound(e.target.value)}
           disabled={!filterLeague}
-          className="px-3 py-2 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none disabled:opacity-40"
+          className="px-3 py-2 text-sm rounded-lg border border-white/10 bg-[#0c1e42] text-white outline-none disabled:opacity-40"
         >
           <option value="">全節</option>
           {filteredRounds.map((r) => (
@@ -106,7 +106,7 @@ export default function RosterAdminClient({ initialRosters, leagues, teams, roun
         <span className="text-xs text-white/30 self-center">{filtered.length}件</span>
       </div>
 
-      <div className="rounded-xl border border-white/8 overflow-hidden" style={{ background: "#be185d" }}>
+      <div className="rounded-xl border border-white/8 overflow-hidden" style={{ background: "#0c1e42" }}>
         {filtered.length === 0 ? (
           <div className="py-16 text-center text-sm text-white/30">
             {rosters.length === 0 ? "まだ登録がありません" : "該当する登録がありません"}
@@ -120,7 +120,7 @@ export default function RosterAdminClient({ initialRosters, leagues, teams, roun
                     <div className="flex items-center gap-2 flex-wrap mb-1">
                       <span
                         className="text-xs px-2 py-0.5 rounded-full font-semibold text-white"
-                        style={{ background: leagues.find((l) => l.id === r.league_id)?.color ?? "#be185d" }}
+                        style={{ background: leagues.find((l) => l.id === r.league_id)?.color ?? "#0c1e42" }}
                       >
                         {getLeagueName(r.league_id)}
                       </span>
@@ -161,7 +161,7 @@ export default function RosterAdminClient({ initialRosters, leagues, teams, roun
                         onClick={() => handleSave(r)}
                         disabled={saving}
                         className="flex-1 py-2 rounded-lg text-sm font-bold disabled:opacity-40"
-                        style={{ background: "linear-gradient(135deg, #c9921e, #e3c060)", color: "#be185d" }}
+                        style={{ background: "linear-gradient(135deg, #c9921e, #e3c060)", color: "#0c1e42" }}
                       >
                         {saving ? "保存中..." : "保存する"}
                       </button>
@@ -188,7 +188,7 @@ export default function RosterAdminClient({ initialRosters, leagues, teams, roun
       {toast && (
         <div
           className="fixed bottom-6 right-6 px-5 py-3 rounded-xl text-sm font-semibold text-white shadow-lg"
-          style={{ background: "#be185d", border: "1px solid rgba(255,255,255,0.1)" }}
+          style={{ background: "#0c1e42", border: "1px solid rgba(255,255,255,0.1)" }}
         >
           {toast}
         </div>

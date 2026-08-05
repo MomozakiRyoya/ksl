@@ -49,7 +49,7 @@ function Modal({
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm sm:px-4">
       <div
         className="w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl border-t sm:border border-white/10 shadow-2xl max-h-[90vh] flex flex-col"
-        style={{ background: "#be185d" }}
+        style={{ background: "#0c1e42" }}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/8 flex-shrink-0">
           <h2 className="text-base font-bold text-white">{title}</h2>
@@ -136,7 +136,7 @@ function TeamForm({
           <select
             value={form.leagueId}
             onChange={(e) => handleLeague(e.target.value)}
-            className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#be185d] text-white outline-none"
+            className="w-full px-3 py-2.5 text-sm rounded-lg border border-white/10 bg-[#0c1e42] text-white outline-none"
           >
             {leagues.map((l) => (
               <option key={l.id} value={l.id}>
@@ -224,7 +224,7 @@ function TeamForm({
           className="flex-1 py-2.5 rounded-xl text-sm font-bold disabled:opacity-40"
           style={{
             background: "linear-gradient(135deg, #c9921e, #e3c060)",
-            color: "#be185d",
+            color: "#0c1e42",
           }}
         >
           {saving ? "保存中..." : "保存する"}
@@ -383,7 +383,7 @@ export default function TeamsAdminClient({
           className="px-4 lg:px-5 py-2.5 rounded-xl text-sm font-bold"
           style={{
             background: "linear-gradient(135deg, #c9921e, #e3c060)",
-            color: "#be185d",
+            color: "#0c1e42",
           }}
         >
           + 新規作成
@@ -414,7 +414,7 @@ export default function TeamsAdminClient({
 
       <div
         className="rounded-xl border border-white/8 overflow-hidden"
-        style={{ background: "#be185d" }}
+        style={{ background: "#0c1e42" }}
       >
         <div className="overflow-x-auto">
           <table className="w-full min-w-[480px]">
@@ -550,7 +550,7 @@ export default function TeamsAdminClient({
         <div
           className="fixed bottom-6 right-6 px-5 py-3 rounded-xl text-sm font-semibold text-white shadow-lg"
           style={{
-            background: "#be185d",
+            background: "#0c1e42",
             border: "1px solid rgba(255,255,255,0.1)",
           }}
         >

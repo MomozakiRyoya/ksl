@@ -51,7 +51,7 @@ export function AdminLoginForm({ supabaseUrl, supabaseAnonKey }: Props) {
       className="min-h-screen flex items-center justify-center px-4"
       style={{
         background:
-          "linear-gradient(160deg, #060b14 0%, #be185d 60%, #060b14 100%)",
+          "linear-gradient(160deg, #060b14 0%, #0c1e42 60%, #060b14 100%)",
       }}
     >
       <div className="w-full max-w-sm">
@@ -71,7 +71,7 @@ export function AdminLoginForm({ supabaseUrl, supabaseAnonKey }: Props) {
         <form
           onSubmit={handleLogin}
           className="rounded-2xl p-6 shadow-2xl space-y-4 border border-white/8"
-          style={{ background: "#be185d" }}
+          style={{ background: "#0c1e42" }}
         >
           {error && (
             <div className="bg-red-900/30 border border-red-800/50 text-red-400 text-sm px-4 py-3 rounded-xl">

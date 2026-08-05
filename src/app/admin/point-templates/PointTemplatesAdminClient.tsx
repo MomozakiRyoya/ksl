@@ -40,7 +40,7 @@ function Modal({
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm sm:px-4">
       <div
         className="w-full sm:max-w-xl rounded-t-2xl sm:rounded-2xl border-t sm:border border-white/10 shadow-2xl max-h-[90vh] flex flex-col"
-        style={{ background: "#be185d" }}
+        style={{ background: "#0c1e42" }}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/8 flex-shrink-0">
           <h2 className="text-base font-bold text-white">{title}</h2>
@@ -242,7 +242,7 @@ export default function PointTemplatesAdminClient({
         <button
           onClick={openCreate}
           className="px-4 lg:px-5 py-2.5 rounded-xl text-sm font-bold"
-          style={{ background: "linear-gradient(135deg, #c9921e, #e3c060)", color: "#be185d" }}
+          style={{ background: "linear-gradient(135deg, #c9921e, #e3c060)", color: "#0c1e42" }}
         >
           + 新規作成
         </button>
@@ -251,7 +251,7 @@ export default function PointTemplatesAdminClient({
       {/* 一覧 */}
       <div
         className="rounded-xl border border-white/8 overflow-hidden"
-        style={{ background: "#be185d" }}
+        style={{ background: "#0c1e42" }}
       >
         {templates.length === 0 ? (
           <div className="py-16 text-center text-sm text-white/30">
@@ -396,7 +396,7 @@ export default function PointTemplatesAdminClient({
                 onClick={handleSave}
                 disabled={saving || !form.name}
                 className="flex-1 py-2.5 rounded-xl text-sm font-bold disabled:opacity-40"
-                style={{ background: "linear-gradient(135deg, #c9921e, #e3c060)", color: "#be185d" }}
+                style={{ background: "linear-gradient(135deg, #c9921e, #e3c060)", color: "#0c1e42" }}
               >
                 {saving ? "保存中..." : "保存する"}
               </button>
@@ -433,7 +433,7 @@ export default function PointTemplatesAdminClient({
       {toast && (
         <div
           className="fixed bottom-6 right-6 px-5 py-3 rounded-xl text-sm font-semibold text-white shadow-lg"
-          style={{ background: "#be185d", border: "1px solid rgba(255,255,255,0.1)" }}
+          style={{ background: "#0c1e42", border: "1px solid rgba(255,255,255,0.1)" }}
         >
           {toast}
         </div>

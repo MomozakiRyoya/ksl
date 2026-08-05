@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const ADMIN_MANIFEST = "/admin/manifest.webmanifest";
-const ADMIN_THEME_COLOR = "#be185d";
+const ADMIN_THEME_COLOR = "#0c1e42";
 
 function useAdminPwaManifest(active: boolean) {
   useEffect(() => {
@@ -62,7 +62,7 @@ function SidebarContent({
   onLogout: () => void;
 }) {
   return (
-    <div className="flex flex-col h-full" style={{ background: "#be185d" }}>
+    <div className="flex flex-col h-full" style={{ background: "#0c1e42" }}>
       <div className="px-5 py-5 border-b border-white/8">
         <p className="text-[9px] tracking-[0.3em] text-white/40 uppercase mb-0.5">
           Kagoshima Super League
@@ -162,7 +162,7 @@ export default function AdminLayout({
         {/* Mobile top bar */}
         <header
           className="lg:hidden flex items-center gap-3 px-4 py-3 border-b border-white/8 flex-shrink-0"
-          style={{ background: "#be185d" }}
+          style={{ background: "#0c1e42" }}
         >
           <button
             onClick={() => setOpen(true)}

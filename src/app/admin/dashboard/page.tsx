@@ -36,7 +36,7 @@ export default async function DashboardPage() {
           <div
             key={label}
             className="rounded-xl p-4 lg:p-5 border border-white/8"
-            style={{ background: "#be185d" }}
+            style={{ background: "#0c1e42" }}
           >
             <p className="text-2xl lg:text-3xl font-black text-white mb-1">
               {value}
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
       {nextRound && (
         <div
           className="rounded-xl p-4 lg:p-5 border border-white/8 mb-4 lg:mb-6"
-          style={{ background: "#be185d" }}
+          style={{ background: "#0c1e42" }}
         >
           <p className="text-xs text-white/40 uppercase tracking-widest mb-2">
             次節
@@ -66,7 +66,7 @@ export default async function DashboardPage() {
 
       <div
         className="rounded-xl border border-white/8 overflow-hidden"
-        style={{ background: "#be185d" }}
+        style={{ background: "#0c1e42" }}
       >
         <div className="px-4 lg:px-5 py-4 border-b border-white/8 flex justify-between items-center">
           <p className="text-sm font-semibold text-white">最新ニュース</p>

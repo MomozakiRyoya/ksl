@@ -9,7 +9,7 @@ export default function ForbiddenPage() {
         <h1 className="text-xl font-bold text-white mb-2">アクセス権限がありません</h1>
         <p className="text-sm text-white/40 mb-8">管理者アカウントでログインしてください</p>
         <Link href="/" className="text-sm px-6 py-3 rounded-xl font-bold"
-          style={{ background: "linear-gradient(135deg, #c9921e, #e3c060)", color: "#be185d" }}>
+          style={{ background: "linear-gradient(135deg, #c9921e, #e3c060)", color: "#0c1e42" }}>
           トップへ戻る
         </Link>
       </div>

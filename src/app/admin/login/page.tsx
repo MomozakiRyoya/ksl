@@ -15,7 +15,7 @@ export default function AdminLoginPage() {
           className="min-h-screen flex items-center justify-center"
           style={{
             background:
-              "linear-gradient(160deg, #060b14 0%, #be185d 60%, #060b14 100%)",
+              "linear-gradient(160deg, #060b14 0%, #0c1e42 60%, #060b14 100%)",
           }}
         >
           <div className="w-8 h-8 border-2 border-white/20 border-t-amber-500 rounded-full animate-spin" />

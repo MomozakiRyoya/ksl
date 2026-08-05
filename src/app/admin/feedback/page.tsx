@@ -62,7 +62,7 @@ export default function AdminFeedbackPage() {
       {!loading && items.length === 0 && (
         <div
           className="rounded-xl border border-white/8 py-16 text-center"
-          style={{ background: "#be185d" }}
+          style={{ background: "#0c1e42" }}
         >
           <p className="text-sm text-white/30">まだ投稿はありません</p>
         </div>
@@ -74,7 +74,7 @@ export default function AdminFeedbackPage() {
             <div
               key={item.id}
               className="rounded-xl border border-white/8 p-4"
-              style={{ background: "#be185d" }}
+              style={{ background: "#0c1e42" }}
             >
               <div className="flex items-start justify-between gap-3">
                 <p className="text-sm text-white leading-relaxed flex-1 whitespace-pre-wrap">
@@ -97,7 +97,7 @@ export default function AdminFeedbackPage() {
       {toast && (
         <div
           className="fixed bottom-6 right-6 px-5 py-3 rounded-xl text-sm font-semibold text-white shadow-lg"
-          style={{ background: "#be185d", border: "1px solid rgba(255,255,255,0.1)" }}
+          style={{ background: "#0c1e42", border: "1px solid rgba(255,255,255,0.1)" }}
         >
           {toast}
         </div>
