@@ -432,7 +432,7 @@ export default function PointTemplatesAdminClient({
 
       {toast && (
         <div
-          className="fixed bottom-6 right-6 px-5 py-3 rounded-xl text-sm font-semibold text-white shadow-lg"
+          className="fixed bottom-6 right-6 z-[60] px-5 py-3 rounded-xl text-sm font-semibold text-white shadow-lg"
           style={{ background: "#0c1e42", border: "1px solid rgba(255,255,255,0.1)" }}
         >
           {toast}
