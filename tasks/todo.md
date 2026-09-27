@@ -2,6 +2,13 @@
 
 チェックボックスは手を動かす作業だけに使う。待ち・判断待ちは箇条書きで書く。
 
+## 2026-09-27 退会後もアバター画像が公開 URL で見えたまま残る
+運営の判断: 退会者のアバター由来の選手写真も公開ページから外す／画像の削除に失敗したら退会を止める
+- [x] `/api/account/delete` で `deleteUser` の前に `removeAvatarFiles(admin, user.id)` を呼び、失敗したら 500 で止める
+- [x] 一回きりの検証（呼ぶ順番と、失敗時にアカウントを消さないこと）
+- [x] `tsc --noEmit` と `next build` を通す
+- [x] `master` にコミット（push はユーザーへ手渡し）
+
 ## 2026-09-27 アバターの削除と、プロフィール保存で選手写真が消える不具合
 - [x] `src/lib/avatar-storage.ts` を新設（本人フォルダの一覧から消す。消す画像を指す選手写真は先に null へ戻す）
 - [x] `DELETE /api/account/avatar` を追加（`getUser()` で確認した本人の `avatars/<user.id>/` だけを消す）
