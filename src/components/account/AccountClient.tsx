@@ -268,6 +268,23 @@ function CropModal({
   );
 }
 
+// 保存は /api/account/avatar がログイン中の本人を確認してから行う
+// （ブラウザから直接ストレージへ書くと RLS で弾かれる）
+async function uploadAvatar(
+  blob: Blob,
+): Promise<{ url: string } | { error: string }> {
+  const body = new FormData();
+  body.append("file", blob, "avatar.jpg");
+  try {
+    const res = await fetch("/api/account/avatar", { method: "POST", body });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && typeof data.url === "string") return { url: data.url };
+    return { error: data.error ?? `HTTP ${res.status}` };
+  } catch {
+    return { error: "通信に失敗しました" };
+  }
+}
+
 const AVATAR_COLORS = [
   "#be185d",
   "#db2777",
@@ -303,6 +320,7 @@ export default function AccountClient({
   const [avatarColor, setAvatarColor] = useState(initialAvatarColor);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(initialAvatarUrl);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileSaved, setProfileSaved] = useState(false);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
@@ -319,40 +337,44 @@ export default function AccountClient({
       URL.revokeObjectURL(cropSrc);
       setCropSrc(null);
     }
+    setAvatarError(null);
     setUploadingAvatar(true);
-    const supabase = createClient();
-    const path = `avatars/${Date.now()}.jpg`;
-    const { error } = await supabase.storage
-      .from("ksl-images")
-      .upload(path, blob, { upsert: true, contentType: "image/jpeg" });
-    if (!error) {
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("ksl-images").getPublicUrl(path);
-      setAvatarUrl(publicUrl);
-      // 即時保存（保存するボタン不要）
-      await supabase.auth.updateUser({
-        data: {
-          display_name: displayName.trim(),
-          avatar_color: avatarColor,
-          avatar_url: publicUrl,
-        },
-      });
-      // 選手プロフィール画像も同期
-      fetch("/api/account/sync-photo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          avatarUrl: publicUrl,
-          playerId: playerId ?? null,
-        }),
-      });
+    const result = await uploadAvatar(blob);
+    if ("error" in result) {
+      setAvatarError(`アップロードに失敗しました（${result.error}）`);
+      setUploadingAvatar(false);
+      return;
     }
+    const publicUrl = result.url;
+    setAvatarUrl(publicUrl);
+    // 即時保存（保存するボタン不要）
+    const supabase = createClient();
+    const { error } = await supabase.auth.updateUser({
+      data: {
+        display_name: displayName.trim(),
+        avatar_color: avatarColor,
+        avatar_url: publicUrl,
+      },
+    });
     setUploadingAvatar(false);
+    if (error) {
+      setAvatarError(`プロフィールへの保存に失敗しました（${error.message}）`);
+      return;
+    }
+    // 選手プロフィール画像も同期
+    fetch("/api/account/sync-photo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        avatarUrl: publicUrl,
+        playerId: playerId ?? null,
+      }),
+    });
   };
 
   const handleRemoveAvatar = async () => {
     if (!avatarUrl) return;
+    setAvatarError(null);
     try {
       const url = new URL(avatarUrl);
       const parts = url.pathname.split("/ksl-images/");
@@ -513,6 +535,9 @@ export default function AccountClient({
                 />
               </div>
             </div>
+            {avatarError && (
+              <p className="mt-2 text-xs text-red-500">{avatarError}</p>
+            )}
           </div>
 
           {/* 表示名 */}

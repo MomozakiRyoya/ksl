@@ -1,5 +1,6 @@
 // 管理画面の画像アップロードの規則。ブラウザ側の事前チェックと
 // /api/admin/upload の検証が同じ規則を使うよう、ここにまとめる
+// （形式とサイズの規則は /api/account/avatar も使う）
 export const IMAGE_FOLDERS = ["teams", "players", "featured"] as const;
 export type ImageFolder = (typeof IMAGE_FOLDERS)[number];
 
