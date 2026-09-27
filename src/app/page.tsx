@@ -157,60 +157,72 @@ export default async function HomePage() {
   return (
     <div className="max-w-lg lg:max-w-4xl mx-auto">
       {/* ヒーローセクション */}
-      {/* 背景写真はまだ無いので、スプラッシュと同じ単色にしている */}
-      <section
-        className="relative overflow-hidden animate-fade-in lg:min-h-[400px] bg-[#0d0010]"
-        style={{ minHeight: 320 }}
-      >
-        {/* コンテンツ */}
-        <div className="relative px-6 pt-12 pb-6 text-center text-white">
-          <h1 className="text-3xl font-black tracking-wide mb-0.5 drop-shadow-lg">
+      {/* 背景は桜島の水彩画。白地の絵なので紙色の上に乗算で重ね、ページの地色となじませる */}
+      {/* 絵は全幅で下端へ置く。噴煙が右にあるので、文字は左の空に載せる */}
+      {/* スマホは噴煙が3つ目の統計（節）に掛かるので、絵を右へ 2.5rem ずらす（右端の木が少し切れる） */}
+      <section className="relative flex flex-col overflow-hidden animate-fade-in bg-[#f5f3ee] lg:aspect-[2/1]">
+        <div className="absolute bottom-0 left-10 -right-10 aspect-[2/1] lg:left-0 lg:right-0">
+          <Image
+            src="/ksl-hero-sakurajima.jpg"
+            alt=""
+            fill
+            preload
+            sizes="(min-width: 1024px) 896px, (min-width: 512px) 512px, 100vw"
+            className="object-cover mix-blend-multiply"
+          />
+        </div>
+
+        {/* コンテンツ（スマホは絵の高さ＝幅の半分から、空に重ねる分を引いて下を空ける） */}
+        <div className="relative px-6 pt-10 pb-[calc(50%-4.5rem)] text-[#0d0010] lg:px-12 lg:pt-12 lg:pb-0">
+          <h1 className="text-3xl font-black tracking-wide mb-0.5">
             KAGOSHIMA
           </h1>
-          <h1 className="text-3xl font-black tracking-wide mb-2 drop-shadow-lg">
+          <h1 className="text-3xl font-black tracking-wide mb-2">
             SUPER LEAGUE
           </h1>
-          <p className="text-white/60 text-xs tracking-[0.2em] mb-6 uppercase">
+          <p className="text-[#0d0010]/60 text-xs tracking-[0.2em] mb-6 uppercase">
             すべてを、背負え。
           </p>
 
-          <div className="flex items-center justify-center gap-6">
-            <div className="text-center">
-              <p className="stat-number text-white">
+          <div className="flex items-center gap-6">
+            <div>
+              <p className="stat-number">
                 <CountUp value={teamCount} duration={4500} />
               </p>
-              <p className="text-white/50 text-[11px] tracking-wide mt-1">
+              <p className="text-[#0d0010]/60 text-[11px] tracking-wide mt-1">
                 チーム
               </p>
             </div>
-            <div className="w-px h-8 bg-white/20" />
-            <div className="text-center">
-              <p className="stat-number text-white">
+            <div className="w-px h-8 bg-[#0d0010]/15" />
+            <div>
+              <p className="stat-number">
                 <CountUp value={divisionCount} duration={3500} />
               </p>
-              <p className="text-white/50 text-[11px] tracking-wide mt-1">
+              <p className="text-[#0d0010]/60 text-[11px] tracking-wide mt-1">
                 ディビジョン
               </p>
             </div>
-            <div className="w-px h-8 bg-white/20" />
-            <div className="text-center">
-              <p className="stat-number text-white">
+            <div className="w-px h-8 bg-[#0d0010]/15" />
+            <div>
+              <p className="stat-number">
                 <CountUp value={maxRoundNumber} duration={4000} />
               </p>
-              <p className="text-white/50 text-[11px] tracking-wide mt-1">節</p>
+              <p className="text-[#0d0010]/60 text-[11px] tracking-wide mt-1">
+                節
+              </p>
             </div>
           </div>
 
           {/* 最新節サブテキスト */}
           {latestFinishedRound && (
-            <p className="text-white/40 text-[11px] mt-3 font-medium tracking-wide">
+            <p className="text-[#0d0010]/60 text-[11px] mt-3 font-medium tracking-wide">
               最新節: {latestFinishedRound.name} 完了
             </p>
           )}
         </div>
 
         {/* リーグタブ（自動スクロール） */}
-        <div className="relative px-4 pb-4">
+        <div className="relative mt-auto px-4 pb-4">
           <AutoScroll speed={22} startOffset={0}>
             {leagues
               .filter((league) => league.name !== "Premier League")
@@ -218,7 +230,7 @@ export default async function HomePage() {
                 <Link
                   key={league.id}
                   href={`/standings?league=${league.id}`}
-                  className="flex-none flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/15 backdrop-blur-sm border border-white/20 text-white hover:bg-white/25 transition-colors whitespace-nowrap"
+                  className="flex-none flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/85 border border-[#0d0010]/10 text-[#0d0010] hover:bg-white transition-colors whitespace-nowrap"
                 >
                   <span
                     className="w-2 h-2 rounded-full flex-shrink-0"
