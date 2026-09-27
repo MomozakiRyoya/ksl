@@ -157,24 +157,11 @@ export default async function HomePage() {
   return (
     <div className="max-w-lg lg:max-w-4xl mx-auto">
       {/* ヒーローセクション */}
+      {/* 背景写真はまだ無いので、スプラッシュと同じ単色にしている */}
       <section
-        className="relative overflow-hidden animate-fade-in lg:min-h-[400px]"
+        className="relative overflow-hidden animate-fade-in lg:min-h-[400px] bg-[#0d0010]"
         style={{ minHeight: 320 }}
       >
-        {/* Season 7 バナー背景 */}
-        <div className="absolute inset-0">
-          <Image
-            src="/ksl-hero.jpg"
-            alt="KSL Season 1"
-            fill
-            className="object-cover object-center animate-zoom-in"
-            priority
-          />
-          {/* 没入感のあるグラデーションオーバーレイ */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#be185d]/60 via-transparent to-transparent" />
-        </div>
-
         {/* コンテンツ */}
         <div className="relative px-6 pt-12 pb-6 text-center text-white">
           <h1 className="text-3xl font-black tracking-wide mb-0.5 drop-shadow-lg">
