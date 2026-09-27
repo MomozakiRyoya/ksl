@@ -285,6 +285,38 @@ async function uploadAvatar(
   }
 }
 
+// 削除も /api/account/avatar が行う。消すのは本人のフォルダ（avatars/<user.id>/）だけで、
+// どのファイルを消すかはサーバー側が決める
+async function removeAvatar(): Promise<{ ok: true } | { error: string }> {
+  try {
+    const res = await fetch("/api/account/avatar", { method: "DELETE" });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.ok === true) return { ok: true };
+    return { error: data.error ?? `HTTP ${res.status}` };
+  } catch {
+    return { error: "通信に失敗しました" };
+  }
+}
+
+// 本人の選手の写真を新しいアバターにそろえる。差し替え前の画像はサーバー側で消す
+async function syncPlayerPhoto(
+  avatarUrl: string,
+  playerId: string | null,
+): Promise<{ ok: true } | { error: string }> {
+  try {
+    const res = await fetch("/api/account/sync-photo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ avatarUrl, playerId }),
+    });
+    if (res.ok) return { ok: true };
+    const data = await res.json().catch(() => ({}));
+    return { error: data.error ?? `HTTP ${res.status}` };
+  } catch {
+    return { error: "通信に失敗しました" };
+  }
+}
+
 const AVATAR_COLORS = [
   "#be185d",
   "#db2777",
@@ -320,9 +352,11 @@ export default function AccountClient({
   const [avatarColor, setAvatarColor] = useState(initialAvatarColor);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(initialAvatarUrl);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [removingAvatar, setRemovingAvatar] = useState(false);
   const [avatarError, setAvatarError] = useState<string | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileSaved, setProfileSaved] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
 
   const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -346,7 +380,6 @@ export default function AccountClient({
       return;
     }
     const publicUrl = result.url;
-    setAvatarUrl(publicUrl);
     // 即時保存（保存するボタン不要）
     const supabase = createClient();
     const { error } = await supabase.auth.updateUser({
@@ -356,33 +389,42 @@ export default function AccountClient({
         avatar_url: publicUrl,
       },
     });
-    setUploadingAvatar(false);
     if (error) {
+      setUploadingAvatar(false);
       setAvatarError(`プロフィールへの保存に失敗しました（${error.message}）`);
       return;
     }
-    // 選手プロフィール画像も同期
-    fetch("/api/account/sync-photo", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        avatarUrl: publicUrl,
-        playerId: playerId ?? null,
-      }),
-    });
+    // 表示はアカウントに保存できてから切り替える（「保存する」はアバターを送らないので、
+    // 失敗したまま新しい画像を見せると、保存しても実際は古い画像のままになる）
+    setAvatarUrl(publicUrl);
+    // 選手プロフィール画像も同期し、差し替え前の画像を消す。終わるまで削除ボタンは押せない
+    // （削除と同時に走ると、消した画像の URL が選手写真に残るため）
+    const synced = await syncPlayerPhoto(publicUrl, playerId ?? null);
+    setUploadingAvatar(false);
+    if ("error" in synced)
+      setAvatarError(`選手写真への反映に失敗しました（${synced.error}）`);
   };
 
   const handleRemoveAvatar = async () => {
     if (!avatarUrl) return;
     setAvatarError(null);
-    try {
-      const url = new URL(avatarUrl);
-      const parts = url.pathname.split("/ksl-images/");
-      if (parts[1]) {
-        const supabase = createClient();
-        await supabase.storage.from("ksl-images").remove([parts[1]]);
-      }
-    } catch {}
+    setRemovingAvatar(true);
+    // 先に画像を消す。失敗したら何も変えず、もう一度押せるようにする
+    const result = await removeAvatar();
+    if ("error" in result) {
+      setRemovingAvatar(false);
+      setAvatarError(`削除に失敗しました（${result.error}）`);
+      return;
+    }
+    const supabase = createClient();
+    const { error } = await supabase.auth.updateUser({
+      data: { avatar_url: null },
+    });
+    setRemovingAvatar(false);
+    if (error) {
+      setAvatarError(`プロフィールへの反映に失敗しました（${error.message}）`);
+      return;
+    }
     setAvatarUrl(null);
   };
 
@@ -394,25 +436,24 @@ export default function AccountClient({
   };
 
   const handleSaveProfile = async () => {
+    setProfileError(null);
     setSavingProfile(true);
     const supabase = createClient();
+    // アバター（avatar_url）と選手写真はここでは送らない。画像の変更・削除の時点で
+    // 保存済みで、ここで送ると画像が変わっていないのに選手写真を null で上書きしてしまう
     const { error } = await supabase.auth.updateUser({
       data: {
         display_name: displayName.trim(),
         avatar_color: avatarColor,
-        avatar_url: avatarUrl,
       },
     });
-    if (!error) {
-      await fetch("/api/account/sync-photo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ avatarUrl, playerId: playerId ?? null }),
-      });
-      setProfileSaved(true);
-      setTimeout(() => setProfileSaved(false), 2500);
-    }
     setSavingProfile(false);
+    if (error) {
+      setProfileError(`保存に失敗しました（${error.message}）`);
+      return;
+    }
+    setProfileSaved(true);
+    setTimeout(() => setProfileSaved(false), 2500);
   };
 
   const handleDeleteAccount = async () => {
@@ -509,7 +550,7 @@ export default function AccountClient({
               <div className="flex flex-col gap-1.5">
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  disabled={uploadingAvatar}
+                  disabled={uploadingAvatar || removingAvatar}
                   className="px-4 py-2 rounded-lg text-xs font-semibold border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-40"
                 >
                   {uploadingAvatar
@@ -521,9 +562,10 @@ export default function AccountClient({
                 {avatarUrl && (
                   <button
                     onClick={handleRemoveAvatar}
-                    className="px-4 py-1.5 rounded-lg text-xs text-red-500 border border-red-200 hover:bg-red-50 transition-colors"
+                    disabled={uploadingAvatar || removingAvatar}
+                    className="px-4 py-1.5 rounded-lg text-xs text-red-500 border border-red-200 hover:bg-red-50 transition-colors disabled:opacity-40"
                   >
-                    削除
+                    {removingAvatar ? "削除中..." : "削除"}
                   </button>
                 )}
                 <input
@@ -593,6 +635,9 @@ export default function AccountClient({
                 ? "✓ 保存しました"
                 : "保存する"}
           </button>
+          {profileError && (
+            <p className="mt-2 text-xs text-red-500">{profileError}</p>
+          )}
         </div>
 
         {/* アカウント情報 */}

@@ -2,6 +2,14 @@
 
 チェックボックスは手を動かす作業だけに使う。待ち・判断待ちは箇条書きで書く。
 
+## 2026-09-27 アバターの削除と、プロフィール保存で選手写真が消える不具合
+- [x] `src/lib/avatar-storage.ts` を新設（本人フォルダの一覧から消す。消す画像を指す選手写真は先に null へ戻す）
+- [x] `DELETE /api/account/avatar` を追加（`getUser()` で確認した本人の `avatars/<user.id>/` だけを消す）
+- [x] `/api/account/sync-photo` は本人フォルダの画像 URL だけを受け付け（null は 400）、反映後に差し替え前の画像を消す
+- [x] `AccountClient` の削除を API 経由にし、保存ではアバターと選手写真に触らない。失敗は画面に出す
+- [x] `tsc --noEmit` と `next build` を通す
+- [x] `master` にコミット（push はユーザーへ手渡し）
+
 ## 2026-09-27 一般ユーザーのアバター画像アップロード
 - [x] `/api/account/avatar` を新設（`getUser()` で本人確認 → サービスロールで `avatars/<user.id>/` へ保存）
 - [x] `AccountClient` のアップロードをこの API 経由にし、失敗時はエラー内容を画面に出す

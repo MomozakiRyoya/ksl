@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdmin } from "@supabase/supabase-js";
+import { ownAvatarFileName, removeAvatarFiles } from "@/lib/avatar-storage";
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -12,25 +13,19 @@ export async function POST(request: Request) {
 
   const body = await request.json();
 
-  // avatarUrl は string または null のみ許可
-  const rawAvatarUrl = body.avatarUrl;
-  if (
-    rawAvatarUrl !== null &&
-    rawAvatarUrl !== undefined &&
-    typeof rawAvatarUrl !== "string"
-  ) {
-    return NextResponse.json(
-      { error: "Invalid avatarUrl type" },
-      { status: 400 },
-    );
-  }
-  const avatarUrl: string | null =
-    typeof rawAvatarUrl === "string" ? rawAvatarUrl : null;
-
   const admin = createAdmin(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
+
+  // 選手写真に書けるのは、本人が /api/account/avatar で保存した画像の URL だけ。
+  // null は受け付けない（プロフィールを保存するたびに null が届き、管理者が登録した
+  // 選手写真を消していた）。アバターの削除は DELETE /api/account/avatar が行い、
+  // 本人の画像を指す選手写真もそこで外す
+  const avatarFileName = ownAvatarFileName(admin, user.id, body.avatarUrl);
+  if (!avatarFileName)
+    return NextResponse.json({ error: "Invalid avatarUrl" }, { status: 400 });
+  const avatarUrl: string = body.avatarUrl;
 
   // 選手の持ち主かどうかは、管理画面で登録した players.user_email と本人のメールの一致だけで決める。
   // user_metadata.player_id と body.playerId は本人が自由に書き換えられる
@@ -45,34 +40,46 @@ export async function POST(request: Request) {
     return data?.user_email?.toLowerCase() === user.email.toLowerCase();
   };
 
-  // 優先度 1: user_metadata.player_id（持ち主を確認してから）
-  const metaPlayerId = user.user_metadata?.player_id as string | undefined;
-  if (metaPlayerId && (await ownsPlayer(metaPlayerId))) {
-    const { error } = await admin
-      .from("players")
-      .update({ photo_url: avatarUrl })
-      .eq("player_id", metaPlayerId);
-    if (!error) return NextResponse.json({ ok: true });
-  }
+  const syncPlayer = async () => {
+    // 優先度 1: user_metadata.player_id（持ち主を確認してから）
+    const metaPlayerId = user.user_metadata?.player_id as string | undefined;
+    if (metaPlayerId && (await ownsPlayer(metaPlayerId))) {
+      const { error } = await admin
+        .from("players")
+        .update({ photo_url: avatarUrl })
+        .eq("player_id", metaPlayerId);
+      if (!error) return true;
+    }
 
-  // 優先度 2: body.playerId（持ち主を確認してから）
-  const bodyPlayerId = body.playerId as string | undefined;
-  if (bodyPlayerId && (await ownsPlayer(bodyPlayerId))) {
-    const { error } = await admin
-      .from("players")
-      .update({ photo_url: avatarUrl })
-      .eq("player_id", bodyPlayerId);
-    if (!error) return NextResponse.json({ ok: true });
-  }
+    // 優先度 2: body.playerId（持ち主を確認してから）
+    const bodyPlayerId = body.playerId as string | undefined;
+    if (bodyPlayerId && (await ownsPlayer(bodyPlayerId))) {
+      const { error } = await admin
+        .from("players")
+        .update({ photo_url: avatarUrl })
+        .eq("player_id", bodyPlayerId);
+      if (!error) return true;
+    }
 
-  // 優先度 3: user.email で players.user_email を照合
-  if (user.email) {
-    const { error } = await admin
-      .from("players")
-      .update({ photo_url: avatarUrl })
-      .eq("user_email", user.email);
-    if (!error) return NextResponse.json({ ok: true });
-  }
+    // 優先度 3: user.email で players.user_email を照合
+    if (user.email) {
+      const { error } = await admin
+        .from("players")
+        .update({ photo_url: avatarUrl })
+        .eq("user_email", user.email);
+      if (!error) return true;
+    }
+    return false;
+  };
+  const linked = await syncPlayer();
 
-  return NextResponse.json({ ok: false, reason: "no player linked" });
+  // 差し替え前のアバターを消す。この API はアカウントのアバター（user_metadata）を
+  // 新しい画像へ切り替えたあとに呼ばれ、選手写真も上で切り替えてある。
+  // 失敗しても古い画像が残るだけなので、ログに留める
+  const cleanupError = await removeAvatarFiles(admin, user.id, avatarFileName);
+  if (cleanupError) console.error("[account/sync-photo]", cleanupError);
+
+  return NextResponse.json(
+    linked ? { ok: true } : { ok: false, reason: "no player linked" },
+  );
 }
