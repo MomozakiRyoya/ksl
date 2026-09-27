@@ -7,16 +7,26 @@ import ClientLayoutWrapper from "@/components/layout/ClientLayoutWrapper";
 export const metadata: Metadata = {
   title: "Kagoshima Super League",
   description: "鹿児島ポーカーチームリーグ公式アプリ",
+  // VERCEL_URL（デプロイごとの URL）は Vercel の認証で保護されていて、
+  // LINE などのクローラーが共有画像を取得できないため本番ドメインを基準にする
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ??
-      (process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000"),
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://kagoshimasuperleague.com",
   ),
   openGraph: {
     title: "Kagoshima Super League",
     description: "鹿児島ポーカーチームリーグ公式アプリ",
-    images: [{ url: "/ksl-logo.png" }],
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1040,
+        height: 1040,
+        alt: "Kagoshima Super League",
+      },
+    ],
+  },
+  // 正方形のロゴなので、X でも切り抜かれない summary カードにする
+  twitter: {
+    card: "summary",
   },
   appleWebApp: {
     capable: true,

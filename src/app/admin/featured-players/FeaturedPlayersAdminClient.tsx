@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { uploadAdminImage } from "@/lib/admin-image-upload";
 
 interface FeaturedPlayer {
   id: string;
@@ -101,24 +101,12 @@ export default function FeaturedPlayersAdminClient({
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const supabase = createClient();
-    const ext = file.type.includes("png")
-      ? "png"
-      : file.type.includes("webp")
-        ? "webp"
-        : "jpg";
-    const path = `featured/${Date.now()}.${ext}`;
-    const { error } = await supabase.storage
-      .from("ksl-images")
-      .upload(path, file, { upsert: true });
-    if (!error) {
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("ksl-images").getPublicUrl(path);
-      setForm((f) => ({ ...f, imageUrl: publicUrl }));
+    const result = await uploadAdminImage(file, "featured");
+    if ("url" in result) {
+      setForm((f) => ({ ...f, imageUrl: result.url }));
       showToast("画像アップロード完了");
     } else {
-      showToast(`画像アップロード失敗: ${error.message}`);
+      showToast(`画像アップロード失敗: ${result.error}`);
     }
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
