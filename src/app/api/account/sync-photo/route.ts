@@ -19,7 +19,10 @@ export async function POST(request: Request) {
     rawAvatarUrl !== undefined &&
     typeof rawAvatarUrl !== "string"
   ) {
-    return NextResponse.json({ error: "Invalid avatarUrl type" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid avatarUrl type" },
+      { status: 400 },
+    );
   }
   const avatarUrl: string | null =
     typeof rawAvatarUrl === "string" ? rawAvatarUrl : null;
@@ -29,9 +32,22 @@ export async function POST(request: Request) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
 
-  // 優先度 1: user_metadata.player_id（サーバー信頼済み）
+  // 選手の持ち主かどうかは、管理画面で登録した players.user_email と本人のメールの一致だけで決める。
+  // user_metadata.player_id と body.playerId は本人が自由に書き換えられる
+  // （マイページの選手選択で任意の選手を指定できる）ので、それだけでは信用しない
+  const ownsPlayer = async (playerId: string) => {
+    if (!user.email) return false;
+    const { data } = await admin
+      .from("players")
+      .select("user_email")
+      .eq("player_id", playerId)
+      .maybeSingle();
+    return data?.user_email?.toLowerCase() === user.email.toLowerCase();
+  };
+
+  // 優先度 1: user_metadata.player_id（持ち主を確認してから）
   const metaPlayerId = user.user_metadata?.player_id as string | undefined;
-  if (metaPlayerId) {
+  if (metaPlayerId && (await ownsPlayer(metaPlayerId))) {
     const { error } = await admin
       .from("players")
       .update({ photo_url: avatarUrl })
@@ -39,22 +55,14 @@ export async function POST(request: Request) {
     if (!error) return NextResponse.json({ ok: true });
   }
 
-  // 優先度 2: body.playerId + 所有確認（user_email で照合）
+  // 優先度 2: body.playerId（持ち主を確認してから）
   const bodyPlayerId = body.playerId as string | undefined;
-  if (bodyPlayerId && user.email) {
-    const { data: playerRow } = await admin
+  if (bodyPlayerId && (await ownsPlayer(bodyPlayerId))) {
+    const { error } = await admin
       .from("players")
-      .select("player_id")
-      .eq("player_id", bodyPlayerId)
-      .eq("user_email", user.email)
-      .single();
-    if (playerRow) {
-      const { error } = await admin
-        .from("players")
-        .update({ photo_url: avatarUrl })
-        .eq("player_id", bodyPlayerId);
-      if (!error) return NextResponse.json({ ok: true });
-    }
+      .update({ photo_url: avatarUrl })
+      .eq("player_id", bodyPlayerId);
+    if (!error) return NextResponse.json({ ok: true });
   }
 
   // 優先度 3: user.email で players.user_email を照合
